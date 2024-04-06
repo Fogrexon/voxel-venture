@@ -7,6 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "test": "jest",
+    "lint": "prettier \"./src/**/*.ts\" --check & eslint \"./src/**/*.ts\"",
+    "fix": "prettier \"./src/**/*.ts\" --write & eslint \"./src/**/*.ts\" --fix",
     "tauri": "tauri"
   },
   "dependencies": {
@@ -20,6 +23,7 @@
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
     "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^27.9.0",
     "husky": "^9.0.11",
