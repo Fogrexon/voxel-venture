@@ -1,0 +1,21 @@
+name: Check
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  test:
+    name: Frontend Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Spellcheck
+        run: npm run spellcheck
+      - name: Jest
+        run: npm run test
+      - name: Build
+        run: npm run build
