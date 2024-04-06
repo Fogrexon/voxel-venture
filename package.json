@@ -8,9 +8,14 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "jest",
-    "lint": "prettier \"./src/**/*.ts\" --check & eslint \"./src/**/*.ts\"",
+    "prettier": "prettier --check",
+    "eslint": "eslint",
+    "tsc": "tsc --noEmit",
+    "prettier:format": "prettier --write",
+    "eslint:format": "eslint --fix",
+    "lint": "prettier \"./src/**/*.ts\" --check & eslint \"./src/**/*.ts\" --max-warnings 0",
     "fix": "prettier \"./src/**/*.ts\" --write & eslint \"./src/**/*.ts\" --fix",
-    "spellcheck": "cspell src/**/*.ts",
+    "spellcheck": "cspell",
     "tauri": "tauri"
   },
   "dependencies": {
@@ -47,8 +52,9 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts}": [
-      "npm run fix",
+    "*.ts": [
+      "npm run prettier",
+      "npm run eslint",
       "npm run spellcheck"
     ]
   }
