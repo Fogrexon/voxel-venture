@@ -16,7 +16,8 @@
     "lint": "prettier \"./src/**/*.ts\" --check & eslint \"./src/**/*.ts\" --max-warnings 0",
     "fix": "prettier \"./src/**/*.ts\" --write & eslint \"./src/**/*.ts\" --fix",
     "spellcheck": "cspell",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@tauri-apps/api": "^1"
