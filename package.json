@@ -15,7 +15,7 @@
     "eslint:format": "eslint --fix",
     "lint": "prettier \"./src/**/*.ts\" --check & eslint \"./src/**/*.ts\" --max-warnings 0",
     "fix": "prettier \"./src/**/*.ts\" --write & eslint \"./src/**/*.ts\" --fix",
-    "spellcheck": "cspell",
+    "spellcheck": "cspell \"./src/**/*.ts\"",
     "tauri": "tauri",
     "prepare": "husky install"
   },
@@ -54,9 +54,9 @@
   },
   "lint-staged": {
     "*.ts": [
-      "npm run prettier",
-      "npm run eslint",
-      "npm run spellcheck"
+      "npx prettier --check",
+      "npx eslint --max-warnings 0",
+      "npx cspell "
     ]
   }
 }
