@@ -7,10 +7,17 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "jest",
-    "lint": "prettier \"./src/**/*.ts\" --check & eslint \"./src/**/*.ts\"",
+    "test": "jest --passWithNoTests",
+    "prettier": "prettier --check",
+    "eslint": "eslint",
+    "tsc": "tsc --noEmit",
+    "prettier:format": "prettier --write",
+    "eslint:format": "eslint --fix",
+    "lint": "prettier \"./src/**/*.ts\" --check & eslint \"./src/**/*.ts\" --max-warnings 0",
     "fix": "prettier \"./src/**/*.ts\" --write & eslint \"./src/**/*.ts\" --fix",
-    "tauri": "tauri"
+    "spellcheck": "cspell \"./src/**/*.ts\"",
+    "tauri": "tauri",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@tauri-apps/api": "^1"
@@ -22,6 +29,7 @@
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
+    "cspell": "^8.6.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
@@ -45,9 +53,10 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts}": [
-      "eslint --fix",
-      "prettier --write"
+    "*.ts": [
+      "npx prettier --check",
+      "npx eslint --max-warnings 0",
+      "npx cspell "
     ]
   }
 }
