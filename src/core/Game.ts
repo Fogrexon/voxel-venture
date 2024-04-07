@@ -5,7 +5,7 @@ import { globalContext } from './GlobalContext';
 import { ScreenSwitcher } from './ui/ScreenSwitcher';
 import { IScreen } from './ui/IScreen';
 
-export type GameSettings = {
+export type GameOptions = {
   uiCanvas: HTMLCanvasElement;
   townCanvas: HTMLCanvasElement;
   imageStore: ImageStore;
@@ -15,28 +15,28 @@ export type GameSettings = {
 };
 
 export class Game {
-  private _gameSettings: GameSettings;
+  private _gameOptions: GameOptions;
 
-  constructor(gameSettings: GameSettings) {
-    this._gameSettings = gameSettings;
+  constructor(gameOptions: GameOptions) {
+    this._gameOptions = gameOptions;
 
     // set up canvas
-    gameSettings.uiCanvas.width = globalContext.windowInfo.width;
-    gameSettings.uiCanvas.height = globalContext.windowInfo.height;
-    gameSettings.uiCanvas.style.position = 'absolute';
-    gameSettings.uiCanvas.style.top = '0';
-    gameSettings.uiCanvas.style.left = '0';
-    gameSettings.townCanvas.width = globalContext.windowInfo.width;
-    gameSettings.townCanvas.height = globalContext.windowInfo.height;
-    gameSettings.townCanvas.style.position = 'absolute';
-    gameSettings.townCanvas.style.top = '0';
-    gameSettings.townCanvas.style.left = '0';
+    gameOptions.uiCanvas.width = globalContext.windowInfo.width;
+    gameOptions.uiCanvas.height = globalContext.windowInfo.height;
+    gameOptions.uiCanvas.style.position = 'absolute';
+    gameOptions.uiCanvas.style.top = '0';
+    gameOptions.uiCanvas.style.left = '0';
+    gameOptions.townCanvas.width = globalContext.windowInfo.width;
+    gameOptions.townCanvas.height = globalContext.windowInfo.height;
+    gameOptions.townCanvas.style.position = 'absolute';
+    gameOptions.townCanvas.style.top = '0';
+    gameOptions.townCanvas.style.left = '0';
 
     // setup pixi and three
     globalContext.pixiApp = new Application();
     globalContext.pixiApp
       .init({
-        view: gameSettings.uiCanvas,
+        view: gameOptions.uiCanvas,
         width: globalContext.windowInfo.width,
         height: globalContext.windowInfo.height,
         background: 0xffffff,
@@ -44,25 +44,25 @@ export class Game {
       })
       .then(() => {
         // レンダラの初期化はpromiseを待たないといけない
-        globalContext.pixiApp.renderer.events.setTargetElement(gameSettings.townCanvas);
+        globalContext.pixiApp.renderer.events.setTargetElement(gameOptions.townCanvas);
       });
     globalContext.threeRenderer = new WebGLRenderer({
-      canvas: gameSettings.townCanvas,
+      canvas: gameOptions.townCanvas,
       alpha: true,
     });
     globalContext.threeRenderer.setSize(
       globalContext.windowInfo.width,
       globalContext.windowInfo.height
     );
-    globalContext.imageStore = gameSettings.imageStore;
-    globalContext.pipMode = gameSettings.pipMode ?? false;
+    globalContext.imageStore = gameOptions.imageStore;
+    globalContext.pipMode = gameOptions.pipMode ?? false;
 
     document.title = globalContext.windowInfo.title;
 
     // set up screens
     // global contextがスクリーンの構築に必要なので、最後
     globalContext.screenSwitcher = new ScreenSwitcher();
-    Object.entries(gameSettings.screens).forEach(([name, createScreen]) => {
+    Object.entries(gameOptions.screens).forEach(([name, createScreen]) => {
       const screen = createScreen();
       globalContext.screenSwitcher.registerScreen(name, screen);
       globalContext.pixiApp.stage.addChild(screen.root);
@@ -70,6 +70,6 @@ export class Game {
   }
 
   public async start() {
-    await globalContext.screenSwitcher.showScreen(this._gameSettings.initialScreen);
+    await globalContext.screenSwitcher.showScreen(this._gameOptions.initialScreen);
   }
 }
