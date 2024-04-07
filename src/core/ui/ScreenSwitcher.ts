@@ -1,15 +1,19 @@
-import { Screen } from './Screen';
+import { IScreen } from './IScreen';
 
 /**
  * スクリーンの切り替えをつかさどるクラス
  */
 export class ScreenSwitcher {
-  private screens: Record<string, Screen>;
+  private screens: Record<string, IScreen>;
 
   private currentScreen: string | null = null;
 
-  constructor(screens: Record<string, Screen>) {
-    this.screens = screens;
+  constructor() {
+    this.screens = {};
+  }
+
+  public registerScreen(name: string, screen: IScreen) {
+    this.screens[name] = screen;
   }
 
   public async showScreen(name: string) {

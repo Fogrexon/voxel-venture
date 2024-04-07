@@ -23,6 +23,7 @@
     "@pixi/ui": "^2.0.0",
     "@tauri-apps/api": "^1",
     "@types/three": "^0.163.0",
+    "gsap": "^3.12.5",
     "pixi.js": "^8.0.5",
     "three": "^0.163.0"
   },

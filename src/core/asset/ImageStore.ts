@@ -24,7 +24,7 @@ export class ImageStore {
     return Promise.all(promises);
   }
 
-  public getImage(path: string): HTMLImageElement {
+  public get(path: string): HTMLImageElement {
     if (!this.files[path]) {
       throw new Error(`Image not found: ${path}`);
     }

@@ -22,7 +22,7 @@
     "windows": [
       {
         "title": "Voxel Venture",
-        "transparent": true,
+        "transparent": false,
         "decorations": true,
         "skipTaskbar": false,
         "alwaysOnTop": false,
