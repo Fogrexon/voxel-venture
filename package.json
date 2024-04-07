@@ -20,7 +20,10 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1"
+    "@tauri-apps/api": "^1",
+    "@types/three": "^0.163.0",
+    "pixi.js": "^8.0.5",
+    "three": "^0.163.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.2.1",

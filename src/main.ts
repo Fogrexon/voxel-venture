@@ -1,22 +1,21 @@
-import { invoke } from '@tauri-apps/api/tauri';
+import { Game } from './core/Game';
+import { loading } from './loading';
+import { ImageStore } from './core/asset/ImageStore';
 
-let greetInputEl: HTMLInputElement | null;
-let greetMsgEl: HTMLElement | null;
+window.addEventListener('load', async () => {
+  const imageStore = new ImageStore();
 
-async function greet() {
-  if (greetMsgEl && greetInputEl) {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    greetMsgEl.textContent = await invoke('greet', {
-      name: greetInputEl.value,
-    });
-  }
-}
+  const uiCanvas = document.getElementById('ui') as HTMLCanvasElement;
+  const townCanvas = document.getElementById('town') as HTMLCanvasElement;
 
-window.addEventListener('DOMContentLoaded', () => {
-  greetInputEl = document.querySelector('#greet-input');
-  greetMsgEl = document.querySelector('#greet-msg');
-  document.querySelector('#greet-form')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    greet();
+  const game = new Game({
+    uiCanvas,
+    townCanvas,
+    imageStore,
+    screens: {},
   });
+
+  await loading([], imageStore);
+
+  game.start();
 });
