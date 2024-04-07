@@ -1,22 +1,33 @@
-import { invoke } from '@tauri-apps/api/tauri';
+import gsap from 'gsap';
+import { PixiPlugin } from 'gsap/PixiPlugin';
+import { Game } from './core/Game';
+import { loading } from './loading';
+import { ImageStore } from './core/asset/ImageStore';
+import { IMAGE_RESOURCES } from './level/resources';
+import { screens } from './level/screens.ts';
 
-let greetInputEl: HTMLInputElement | null;
-let greetMsgEl: HTMLElement | null;
+gsap.registerPlugin(PixiPlugin);
 
-async function greet() {
-  if (greetMsgEl && greetInputEl) {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    greetMsgEl.textContent = await invoke('greet', {
-      name: greetInputEl.value,
-    });
-  }
-}
+window.addEventListener('load', async () => {
+  const imageStore = new ImageStore();
 
-window.addEventListener('DOMContentLoaded', () => {
-  greetInputEl = document.querySelector('#greet-input');
-  greetMsgEl = document.querySelector('#greet-msg');
-  document.querySelector('#greet-form')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    greet();
+  const uiCanvas = document.getElementById('ui') as HTMLCanvasElement;
+  const townCanvas = document.getElementById('town') as HTMLCanvasElement;
+
+  // クエリでpipモードかどうかを指定する
+  const urlParams = new URLSearchParams(window.location.search);
+  const pipMode = urlParams.get('pipMode') === 'true';
+
+  await loading(IMAGE_RESOURCES, imageStore);
+
+  const game = new Game({
+    uiCanvas,
+    townCanvas,
+    imageStore,
+    screens,
+    initialScreen: 'main',
+    pipMode,
   });
+
+  game.start();
 });
