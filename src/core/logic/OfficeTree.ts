@@ -14,10 +14,12 @@ export type OfficeTreeBlueprint = {
 
 export type OfficeTreeSettings = {
   readonly groupOrder: Record<string, number>;
-  readonly officeTreeBlueprints: Record<string, OfficeTreeBlueprint>;
+  readonly blueprintTable: Record<string, OfficeTreeBlueprint>;
 };
 
 export class OfficeTree {
+  public readonly officeTreeSettings: OfficeTreeSettings;
+
   public readonly blueprintTable: Record<string, OfficeTreeBlueprint>;
 
   public readonly officeParamsTable: Record<string, OfficeParams> = {};
@@ -26,8 +28,9 @@ export class OfficeTree {
 
   public unlockReadyBlueprints: string[] = [];
 
-  constructor(blueprintTable: Record<string, OfficeTreeBlueprint>) {
-    this.blueprintTable = blueprintTable;
+  constructor(officeTreeSettings: OfficeTreeSettings) {
+    this.officeTreeSettings = officeTreeSettings;
+    this.blueprintTable = officeTreeSettings.blueprintTable;
   }
 
   public unlockBlueprint(id: string) {
