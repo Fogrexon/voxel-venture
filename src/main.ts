@@ -4,7 +4,7 @@ import { Game } from './core/Game';
 import { loading } from './loading';
 import { ImageStore } from './core/asset/ImageStore';
 import { IMAGE_RESOURCES } from './level/resources';
-import { screens } from './level/screens.ts';
+import { screens } from './level/screens';
 
 gsap.registerPlugin(PixiPlugin);
 

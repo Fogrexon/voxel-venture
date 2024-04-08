@@ -2,8 +2,8 @@ import { Container, Text } from 'pixi.js';
 import gsap from 'gsap';
 import { IScreen } from '../../../core/ui/IScreen';
 import { GUIWindow } from '../../../core/ui/common/GUIWindow';
-import { createFullSizeWindow } from '../common/fullSizeWindow.ts';
-import { createCloseButton } from '../common/closeButton.ts';
+import { createFullSizeWindow } from '../common/fullSizeWindow';
+import { createCloseButton } from '../common/closeButton';
 
 export class SettingScreen implements IScreen {
   private _root: Container;

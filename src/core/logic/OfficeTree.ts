@@ -1,0 +1,85 @@
+import { OfficeParams } from './Office';
+import { globalContext } from '../GlobalContext';
+
+export type OfficeTreeBlueprint = {
+  readonly officeType: string;
+  readonly group: string;
+  readonly level: number;
+  readonly name: string;
+  readonly description: string;
+  readonly cost: number;
+  readonly officeParams: Partial<OfficeParams>;
+  readonly linkTo: string[];
+};
+
+export type OfficeTreeSettings = {
+  readonly groupOrder: Record<string, number>;
+  readonly officeTreeBlueprints: Record<string, OfficeTreeBlueprint>;
+};
+
+export class OfficeTree {
+  public readonly blueprintTable: Record<string, OfficeTreeBlueprint>;
+
+  public readonly officeParamsTable: Record<string, OfficeParams> = {};
+
+  public unlockedBlueprints: string[] = [];
+
+  public unlockReadyBlueprints: string[] = [];
+
+  constructor(blueprintTable: Record<string, OfficeTreeBlueprint>) {
+    this.blueprintTable = blueprintTable;
+  }
+
+  public unlockBlueprint(id: string) {
+    const blueprint = this.blueprintTable[id];
+    // エラーチェック
+    if (!blueprint) {
+      throw new Error(`Unknown blueprint: ${id}`);
+    }
+    if (this.unlockedBlueprints.includes(id)) {
+      throw new Error(`Already unlocked: ${id}`);
+    }
+    if (!this.unlockReadyBlueprints.includes(id)) {
+      throw new Error(`Dependency not unlocked: ${id}`);
+    }
+    if (globalContext.gameState.money < blueprint.cost) {
+      throw new Error(`Not enough money: ${id}`);
+    }
+
+    // アンロック処理
+    globalContext.gameState.money -= blueprint.cost;
+    this.unlockedBlueprints.push(id);
+    this.unlockReadyBlueprints = this.unlockReadyBlueprints.filter((b) => b !== id);
+    this.unlockReadyBlueprints.push(...blueprint.linkTo);
+
+    // パラメータの適用
+    if (blueprint.officeParams) {
+      if (!this.officeParamsTable[blueprint.officeType]) {
+        this.officeParamsTable[blueprint.officeType] = {
+          type: blueprint.officeType,
+          unitPrice: 0,
+          maxCapacity: 0,
+          productionRate: 0,
+          decayRate: 0,
+        };
+      }
+      this.officeParamsTable[blueprint.officeType] = {
+        ...this.officeParamsTable[blueprint.officeType],
+        ...blueprint.officeParams,
+      };
+    }
+  }
+
+  /**
+   * 事業所のパラメーターを取得する
+   * 解放された設計図に基づきパラメーターが更新される
+   * @param type
+   */
+  public getOfficeParams(type: string): OfficeParams {
+    const officeParams = this.officeParamsTable[type];
+    if (!officeParams) {
+      throw new Error(`Unknown office type: ${type}`);
+    }
+    return officeParams;
+  }
+}
