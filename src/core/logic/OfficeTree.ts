@@ -41,6 +41,7 @@ export class OfficeTree {
       if (!this.officeParamsTable[blueprint.officeType]) {
         this.officeParamsTable[blueprint.officeType] = {
           type: blueprint.officeType,
+          buildCost: 0,
           unitPrice: 0,
           maxCapacity: 0,
           productionRate: 0,

@@ -1,9 +1,13 @@
-import { WebGLRenderer } from 'three';
-import { Application } from 'pixi.js';
+import { OrthographicCamera, Scene, WebGLRenderer } from 'three';
+import { Application, Ticker } from 'pixi.js';
 import { ImageStore } from './asset/ImageStore';
 import { globalContext } from './GlobalContext';
 import { ScreenSwitcher } from './ui/ScreenSwitcher';
 import { IScreen } from './ui/IScreen';
+import { MapScene } from './scene/MapScene';
+import { GameParameter } from './logic/GameParameter';
+import { OfficeTree } from './logic/OfficeTree';
+import { OfficeMap } from './logic/OfficeMap';
 
 export type GameOptions = {
   uiCanvas: HTMLCanvasElement;
@@ -12,6 +16,7 @@ export type GameOptions = {
   screens: Record<string, () => IScreen>;
   initialScreen: string;
   pipMode?: boolean;
+  gameParameters: GameParameter;
 };
 
 export class Game {
@@ -54,22 +59,54 @@ export class Game {
       globalContext.windowInfo.width,
       globalContext.windowInfo.height
     );
+    globalContext.threeScene = new Scene();
+    globalContext.threeCamera = new OrthographicCamera(
+      globalContext.windowInfo.width / -2,
+      globalContext.windowInfo.width / 2,
+      globalContext.windowInfo.height / 2,
+      globalContext.windowInfo.height / -2,
+      1,
+      1000
+    );
+    globalContext.threeCamera.position.set(5, 5, 5);
+    globalContext.threeCamera.lookAt(0, 0, 0);
+
+    // game管理系コンポーネントの初期化
+    globalContext.mapScene = new MapScene();
+    globalContext.threeScene.add(globalContext.mapScene.root);
     globalContext.imageStore = gameOptions.imageStore;
     globalContext.pipMode = gameOptions.pipMode ?? false;
+    globalContext.gameParameters = gameOptions.gameParameters;
+    globalContext.officeTree = new OfficeTree(globalContext.gameParameters);
+    globalContext.officeMap = new OfficeMap();
+
+    // TODO: テスト用に一個追加しただけなので消す
+    globalContext.officeMap.registerOffice(0, 0, 'screw');
 
     document.title = globalContext.windowInfo.title;
 
-    // set up screens
-    // global contextがスクリーンの構築に必要なので、最後
+    // global contextが構築に必要な処理
     globalContext.screenSwitcher = new ScreenSwitcher();
     Object.entries(gameOptions.screens).forEach(([name, createScreen]) => {
       const screen = createScreen();
       globalContext.screenSwitcher.registerScreen(name, screen);
       globalContext.pixiApp.stage.addChild(screen.root);
     });
+    globalContext.mapScene.buildMap();
   }
 
-  public async start() {
-    await globalContext.screenSwitcher.showScreen(this._gameOptions.initialScreen);
+  public start() {
+    globalContext.pixiApp.ticker.add(this.tick.bind(this));
+    globalContext.screenSwitcher.showScreen(this._gameOptions.initialScreen);
+  }
+
+  public tick(ticker: Ticker) {
+    const deltaTime = ticker.deltaMS / 1000;
+    const prevIntTime = Math.floor(globalContext.gameState.time);
+    globalContext.gameState.time += deltaTime;
+    const currentIntTime = Math.floor(globalContext.gameState.time);
+    if (currentIntTime !== prevIntTime) {
+      globalContext.officeMap.processAllOffice(1);
+    }
   }
 }

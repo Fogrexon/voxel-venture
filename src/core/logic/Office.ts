@@ -81,6 +81,7 @@ export class Office {
         break;
       }
       soldNum += 1;
+      // TODO: 需要量に応じた価格設定
       income += product.price;
     }
 

@@ -13,6 +13,7 @@ export type OfficeBlueprintId = string;
  */
 export type OfficeParams = {
   type: string;
+  buildCost: number;
   unitPrice: number;
   maxCapacity: number;
   productionRate: number;
