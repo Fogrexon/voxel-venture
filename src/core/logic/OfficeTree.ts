@@ -1,26 +1,8 @@
-import { OfficeParams } from './Office';
 import { globalContext } from '../GlobalContext';
-
-export type OfficeTreeBlueprint = {
-  readonly officeType: string;
-  readonly group: string;
-  readonly level: number;
-  readonly name: string;
-  readonly description: string;
-  readonly cost: number;
-  readonly officeParams: Partial<OfficeParams>;
-  readonly linkTo: string[];
-};
-
-export type OfficeTreeSettings = {
-  readonly groupOrder: Record<string, number>;
-  readonly blueprintTable: Record<string, OfficeTreeBlueprint>;
-};
+import { OfficeBlueprint, GameParameter, OfficeParams } from './GameParameter';
 
 export class OfficeTree {
-  public readonly officeTreeSettings: OfficeTreeSettings;
-
-  public readonly blueprintTable: Record<string, OfficeTreeBlueprint>;
+  public readonly blueprintTable: Record<string, OfficeBlueprint>;
 
   public readonly officeParamsTable: Record<string, OfficeParams> = {};
 
@@ -28,9 +10,8 @@ export class OfficeTree {
 
   public unlockReadyBlueprints: string[] = [];
 
-  constructor(officeTreeSettings: OfficeTreeSettings) {
-    this.officeTreeSettings = officeTreeSettings;
-    this.blueprintTable = officeTreeSettings.blueprintTable;
+  constructor(gameParameter: GameParameter) {
+    this.blueprintTable = gameParameter.blueprintTable;
   }
 
   public unlockBlueprint(id: string) {

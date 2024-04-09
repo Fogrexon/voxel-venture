@@ -4,6 +4,7 @@ import { ScreenSwitcher } from './ui/ScreenSwitcher';
 import { ImageStore } from './asset/ImageStore';
 import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
+import { GameParameter } from './logic/GameParameter';
 
 export type GlobalContext = {
   pixiApp: Application;
@@ -13,6 +14,7 @@ export type GlobalContext = {
   imageStore: ImageStore;
   officeTree: OfficeTree;
   officeMap: OfficeMap;
+  gameParameters: GameParameter;
   windowInfo: {
     width: number;
     height: number;
@@ -34,6 +36,7 @@ export const globalContext: GlobalContext = {
   imageStore: null as unknown as ImageStore,
   officeTree: null as unknown as OfficeTree,
   officeMap: null as unknown as OfficeMap,
+  gameParameters: null as unknown as GameParameter,
   windowInfo: {
     width: 800,
     height: 600,

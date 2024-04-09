@@ -1,19 +1,12 @@
 import { Queue } from '../../util/Queue';
 import { globalContext } from '../GlobalContext';
+import { ProductId } from './GameParameter';
 
 export type Product = {
-  readonly type: string;
+  readonly productId: ProductId;
   readonly createdAt: number;
 
   price: number;
-};
-
-export type OfficeParams = {
-  type: string;
-  unitPrice: number;
-  maxCapacity: number;
-  productionRate: number;
-  decayRate: number;
 };
 
 export type ProduceResult = {
@@ -62,7 +55,7 @@ export class Office {
 
     for (let i = 0; i < producedItemNum - discardedItemNum; i += 1) {
       this.storage.enqueue({
-        type: this.type,
+        productId: globalContext.gameParameters.productByType[this.type],
         createdAt: globalContext.gameState.time,
         price: unitPrice,
       });
@@ -90,6 +83,8 @@ export class Office {
       soldNum += 1;
       income += product.price;
     }
+
+    globalContext.gameState.money += income;
 
     return {
       soldNum,
