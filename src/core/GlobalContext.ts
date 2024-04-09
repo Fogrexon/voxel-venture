@@ -48,7 +48,7 @@ export const globalContext: GlobalContext = {
     title: 'VoxelVenture',
   },
   gameState: {
-    money: 0,
+    money: 100,
     time: 0,
   },
   pipMode: false,

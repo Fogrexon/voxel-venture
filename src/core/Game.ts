@@ -44,12 +44,14 @@ export class Game {
         view: gameOptions.uiCanvas,
         width: globalContext.windowInfo.width,
         height: globalContext.windowInfo.height,
-        background: 0xffffff,
+        // background: 0xffffff,
         backgroundAlpha: 0,
+        autoStart: true,
       })
       .then(() => {
         // レンダラの初期化はpromiseを待たないといけない
-        globalContext.pixiApp.renderer.events.setTargetElement(gameOptions.townCanvas);
+        // globalContext.pixiApp.renderer.events.setTargetElement(gameOptions.townCanvas);
+        globalContext.pixiApp.ticker.add(this.tick.bind(this));
       });
     globalContext.threeRenderer = new WebGLRenderer({
       canvas: gameOptions.townCanvas,
@@ -60,11 +62,13 @@ export class Game {
       globalContext.windowInfo.height
     );
     globalContext.threeScene = new Scene();
+    const ratio = globalContext.windowInfo.width / globalContext.windowInfo.height;
+    const cameraSize = 1;
     globalContext.threeCamera = new OrthographicCamera(
-      globalContext.windowInfo.width / -2,
-      globalContext.windowInfo.width / 2,
-      globalContext.windowInfo.height / 2,
-      globalContext.windowInfo.height / -2,
+      -cameraSize * ratio,
+      cameraSize * ratio,
+      cameraSize,
+      -cameraSize,
       1,
       1000
     );
@@ -81,7 +85,11 @@ export class Game {
     globalContext.officeMap = new OfficeMap();
 
     // TODO: テスト用に一個追加しただけなので消す
-    globalContext.officeMap.registerOffice(0, 0, 'screw');
+    for (let x = -5; x < 5; x += 1) {
+      for (let y = -5; y < 5; y += 1) {
+        globalContext.officeMap.registerOffice(x, y, 'screw');
+      }
+    }
 
     document.title = globalContext.windowInfo.title;
 
@@ -96,7 +104,6 @@ export class Game {
   }
 
   public start() {
-    globalContext.pixiApp.ticker.add(this.tick.bind(this));
     globalContext.screenSwitcher.showScreen(this._gameOptions.initialScreen);
   }
 
@@ -108,5 +115,7 @@ export class Game {
     if (currentIntTime !== prevIntTime) {
       globalContext.officeMap.processAllOffice(1);
     }
+
+    globalContext.threeRenderer.render(globalContext.threeScene, globalContext.threeCamera);
   }
 }

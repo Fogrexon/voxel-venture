@@ -46,6 +46,6 @@ export type DemandOption = {
 export type GameParameter = {
   readonly groupOrder: Record<GroupId, number>;
   readonly productByType: Record<OfficeTypeId, ProductId>;
-  readonly demandOptions: Record<ProductId, DemandOption>;
+  readonly demandOptionTable: Record<ProductId, DemandOption>;
   readonly blueprintTable: Record<OfficeBlueprintId, OfficeBlueprint>;
 };

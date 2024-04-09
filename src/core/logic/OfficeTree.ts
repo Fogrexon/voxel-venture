@@ -12,6 +12,17 @@ export class OfficeTree {
 
   constructor(gameParameter: GameParameter) {
     this.blueprintTable = gameParameter.blueprintTable;
+    this.setupInitialBlueprints();
+  }
+
+  private setupInitialBlueprints() {
+    Object.entries(this.blueprintTable).forEach(([blueprintId, blueprint]) => {
+      if (!blueprint.isFirstUnlocked) return;
+
+      // 解放待ちリストに入れておかないとエラーが出る
+      this.unlockReadyBlueprints.push(blueprintId);
+      this.unlockBlueprint(blueprintId);
+    });
   }
 
   public unlockBlueprint(id: string) {
