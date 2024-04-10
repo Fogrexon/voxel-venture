@@ -1,12 +1,11 @@
 import { BoxGeometry, Group, Mesh, MeshNormalMaterial } from 'three';
 import gsap from 'gsap';
-import { OfficeTypeId } from '../../logic/GameParameter';
 
 export class OfficeModel {
   public readonly root: Group = new Group();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(type: OfficeTypeId) {
+  constructor() {
     // テスト用にmesh normal materialを使用
     const geometryScale = 0.5;
     const mesh = new Mesh(

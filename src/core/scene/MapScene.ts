@@ -9,9 +9,9 @@ export class MapScene {
   public buildMap() {
     const officeMap = globalContext.officeMap.map;
 
-    officeMap.iterate(async (x, y, officeData) => {
-      const office = officeData.data;
-      const model = new OfficeModel(office.type);
+    officeMap.iterate(async (x, y) => {
+      // TODO: 店のタイプに応じてモデルを変える仕組みを考える
+      const model = new OfficeModel();
       this.root.add(model.root);
       model.setPosition(x, y);
       await wait((Math.abs(x) + Math.abs(y)) * 100);
