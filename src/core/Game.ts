@@ -78,9 +78,11 @@ export class Game {
     // game管理系コンポーネントの初期化
     globalContext.mapScene = new MapScene();
     globalContext.threeScene.add(globalContext.mapScene.root);
+
     globalContext.imageStore = gameOptions.imageStore;
     globalContext.pipMode = gameOptions.pipMode ?? false;
     globalContext.gameParameters = gameOptions.gameParameters;
+
     globalContext.officeTree = new OfficeTree(globalContext.gameParameters);
     globalContext.officeMap = new OfficeMap();
 
