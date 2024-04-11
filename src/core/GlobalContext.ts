@@ -1,17 +1,18 @@
 import { Application } from 'pixi.js';
-import { Camera, Scene, WebGLRenderer } from 'three';
+import { Scene, WebGLRenderer } from 'three';
 import { ScreenSwitcher } from './ui/ScreenSwitcher';
 import { ImageStore } from './asset/ImageStore';
 import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
 import { GameParameter } from './logic/GameParameter';
 import { MapScene } from './scene/MapScene';
+import { MapControlCamera } from './scene/MapControlCamera';
 
 export type GlobalContext = {
   pixiApp: Application;
   threeRenderer: WebGLRenderer;
   threeScene: Scene;
-  threeCamera: Camera;
+  mapControlCamera: MapControlCamera;
   mapScene: MapScene;
   screenSwitcher: ScreenSwitcher;
   imageStore: ImageStore;
@@ -35,7 +36,7 @@ export const globalContext: GlobalContext = {
   pixiApp: null as unknown as Application,
   threeRenderer: null as unknown as WebGLRenderer,
   threeScene: null as unknown as Scene,
-  threeCamera: null as unknown as Camera,
+  mapControlCamera: null as unknown as MapControlCamera,
   mapScene: null as unknown as MapScene,
   screenSwitcher: null as unknown as ScreenSwitcher,
   imageStore: null as unknown as ImageStore,
