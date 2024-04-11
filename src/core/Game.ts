@@ -1,4 +1,4 @@
-import { OrthographicCamera, Scene, WebGLRenderer } from 'three';
+import { Scene, WebGLRenderer } from 'three';
 import { Application, Ticker } from 'pixi.js';
 import { ImageStore } from './asset/ImageStore';
 import { globalContext } from './GlobalContext';
@@ -8,6 +8,7 @@ import { MapScene } from './scene/MapScene';
 import { GameParameter } from './logic/GameParameter';
 import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
+import { MapControlCamera } from './scene/MapControlCamera';
 
 export type GameOptions = {
   uiCanvas: HTMLCanvasElement;
@@ -62,25 +63,20 @@ export class Game {
       globalContext.windowInfo.height
     );
     globalContext.threeScene = new Scene();
-    const ratio = globalContext.windowInfo.width / globalContext.windowInfo.height;
-    const cameraSize = 1;
-    globalContext.threeCamera = new OrthographicCamera(
-      -cameraSize * ratio,
-      cameraSize * ratio,
-      cameraSize,
-      -cameraSize,
-      1,
-      1000
+    globalContext.mapControlCamera = new MapControlCamera();
+    globalContext.mapControlCamera.setScreenSize(
+      globalContext.windowInfo.width,
+      globalContext.windowInfo.height
     );
-    globalContext.threeCamera.position.set(5, 5, 5);
-    globalContext.threeCamera.lookAt(0, 0, 0);
 
     // game管理系コンポーネントの初期化
     globalContext.mapScene = new MapScene();
     globalContext.threeScene.add(globalContext.mapScene.root);
+
     globalContext.imageStore = gameOptions.imageStore;
     globalContext.pipMode = gameOptions.pipMode ?? false;
     globalContext.gameParameters = gameOptions.gameParameters;
+
     globalContext.officeTree = new OfficeTree(globalContext.gameParameters);
     globalContext.officeMap = new OfficeMap();
 
@@ -115,7 +111,11 @@ export class Game {
     if (currentIntTime !== prevIntTime) {
       globalContext.officeMap.processAllOffice(1);
     }
+    globalContext.mapControlCamera.updateCameraState(deltaTime);
 
-    globalContext.threeRenderer.render(globalContext.threeScene, globalContext.threeCamera);
+    globalContext.threeRenderer.render(
+      globalContext.threeScene,
+      globalContext.mapControlCamera.threeCamera
+    );
   }
 }

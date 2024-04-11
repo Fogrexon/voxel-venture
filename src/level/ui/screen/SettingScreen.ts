@@ -30,11 +30,11 @@ export class SettingScreen implements IScreen {
   public async show() {
     this._root.visible = true;
     this._root.alpha = 0;
-    await gsap.to(this._root, { alpha: 1, duration: 0.5 });
+    await gsap.to(this._root, { alpha: 1, duration: 0.3 });
   }
 
   public async hide() {
-    await gsap.to(this._root, { alpha: 0, duration: 0.5 });
+    await gsap.to(this._root, { alpha: 0, duration: 0.3 });
     this._root.visible = false;
   }
 }
