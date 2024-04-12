@@ -48,8 +48,6 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
     this._canvas = canvas;
     this._selectionPlane = selectionPlane;
     this._raycaster = new Raycaster();
-
-    this.setActive(true);
   }
 
   private handleMouseMove(event: MouseEvent) {

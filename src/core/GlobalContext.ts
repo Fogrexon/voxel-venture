@@ -1,19 +1,14 @@
 import { Application } from 'pixi.js';
-import { Scene, WebGLRenderer } from 'three';
 import { ScreenSwitcher } from './ui/ScreenSwitcher';
 import { ImageStore } from './asset/ImageStore';
 import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
 import { GameParameter } from './logic/GameParameter';
-import { MapScene } from './scene/MapScene';
-import { MapControlCamera } from './scene/MapControlCamera';
+import { MapController } from './scene/MapController';
 
 export type GlobalContext = {
   pixiApp: Application;
-  threeRenderer: WebGLRenderer;
-  threeScene: Scene;
-  mapControlCamera: MapControlCamera;
-  mapScene: MapScene;
+  mapController: MapController;
   screenSwitcher: ScreenSwitcher;
   imageStore: ImageStore;
   officeTree: OfficeTree;
@@ -34,10 +29,7 @@ export type GlobalContext = {
 // globalContextは正しく設定されたうえでゲームが開始されることが保証されているので、nullを握りつぶす
 export const globalContext: GlobalContext = {
   pixiApp: null as unknown as Application,
-  threeRenderer: null as unknown as WebGLRenderer,
-  threeScene: null as unknown as Scene,
-  mapControlCamera: null as unknown as MapControlCamera,
-  mapScene: null as unknown as MapScene,
+  mapController: null as unknown as MapController,
   screenSwitcher: null as unknown as ScreenSwitcher,
   imageStore: null as unknown as ImageStore,
   officeTree: null as unknown as OfficeTree,

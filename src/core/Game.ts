@@ -1,14 +1,13 @@
-import { Scene, WebGLRenderer } from 'three';
 import { Application, Ticker } from 'pixi.js';
 import { ImageStore } from './asset/ImageStore';
 import { globalContext } from './GlobalContext';
 import { ScreenSwitcher } from './ui/ScreenSwitcher';
 import { IScreen } from './ui/IScreen';
-import { MapScene } from './scene/MapScene';
 import { GameParameter } from './logic/GameParameter';
 import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
-import { MapControlCamera } from './scene/MapControlCamera';
+import { MapController } from './scene/MapController';
+import { wait } from '../util/wait';
 
 export type GameOptions = {
   uiCanvas: HTMLCanvasElement;
@@ -54,25 +53,13 @@ export class Game {
         // globalContext.pixiApp.renderer.events.setTargetElement(gameOptions.townCanvas);
         globalContext.pixiApp.ticker.add(this.tick.bind(this));
       });
-    globalContext.threeRenderer = new WebGLRenderer({
-      canvas: gameOptions.townCanvas,
-      alpha: true,
-    });
-    globalContext.threeRenderer.setSize(
-      globalContext.windowInfo.width,
-      globalContext.windowInfo.height
-    );
-    globalContext.threeScene = new Scene();
-    globalContext.mapControlCamera = new MapControlCamera();
-    globalContext.mapControlCamera.setScreenSize(
+    globalContext.mapController = new MapController(gameOptions.townCanvas);
+    globalContext.mapController.setSize(
       globalContext.windowInfo.width,
       globalContext.windowInfo.height
     );
 
     // game管理系コンポーネントの初期化
-    globalContext.mapScene = new MapScene();
-    globalContext.threeScene.add(globalContext.mapScene.root);
-
     globalContext.imageStore = gameOptions.imageStore;
     globalContext.pipMode = gameOptions.pipMode ?? false;
     globalContext.gameParameters = gameOptions.gameParameters;
@@ -80,10 +67,15 @@ export class Game {
     globalContext.officeTree = new OfficeTree(globalContext.gameParameters);
     globalContext.officeMap = new OfficeMap();
 
-    // TODO: テスト用に一個追加しただけなので消す
+    // TODO: テスト用に追加しただけなので消す
     for (let x = -5; x < 5; x += 1) {
       for (let y = -5; y < 5; y += 1) {
-        globalContext.officeMap.registerOffice(x, y, 'screw');
+        (async () => {
+          await wait((Math.abs(x) + Math.abs(y)) * 100);
+          globalContext.officeMap.registerOffice(x, y, 'screw');
+          globalContext.mapController.rebuildMap();
+        })();
+        // eslint-disable-next-line no-await-in-loop
       }
     }
 
@@ -96,10 +88,10 @@ export class Game {
       globalContext.screenSwitcher.registerScreen(name, screen);
       globalContext.pixiApp.stage.addChild(screen.root);
     });
-    globalContext.mapScene.buildMap();
   }
 
   public start() {
+    globalContext.mapController.start();
     globalContext.screenSwitcher.showScreen(this._gameOptions.initialScreen);
   }
 
@@ -111,11 +103,7 @@ export class Game {
     if (currentIntTime !== prevIntTime) {
       globalContext.officeMap.processAllOffice(1);
     }
-    globalContext.mapControlCamera.updateCameraState(deltaTime);
-
-    globalContext.threeRenderer.render(
-      globalContext.threeScene,
-      globalContext.mapControlCamera.threeCamera
-    );
+    globalContext.mapController.tick(deltaTime);
+    globalContext.mapController.render();
   }
 }
