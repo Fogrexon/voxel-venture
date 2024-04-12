@@ -64,7 +64,7 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
     if (intersects.length > 0) {
       const { point } = intersects[0];
       // マスは1x1の正方形なので、x, z座標を整数に丸める
-      this._tempVec.set(Math.floor(point.x), Math.floor(point.z));
+      this._tempVec.set(Math.floor(point.x + 0.5), Math.floor(point.z + 0.5));
 
       if (!this._selected.equals(this._tempVec)) {
         if (!this._skipLeave) {
@@ -116,5 +116,6 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
       this._canvas.removeEventListener('mousemove', this.handleMouseMove.bind(this));
       this._canvas.removeEventListener('click', this.handleMouseClick.bind(this));
     }
+    this._active = active;
   }
 }

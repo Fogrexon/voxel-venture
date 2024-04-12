@@ -12,16 +12,16 @@ export class MapController {
 
   private _mapSelector: MapSelector;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(renderTargetCanvas: HTMLCanvasElement, eventTargetCanvas: HTMLCanvasElement) {
     this._threeRenderer = new WebGLRenderer({
-      canvas,
+      canvas: renderTargetCanvas,
       alpha: true,
     });
     this._mapControlCamera = new MapControlCamera();
     this._mapScene = new MapScene();
     this._mapSelector = new MapSelector(
       this._mapControlCamera.threeCamera,
-      this._threeRenderer.domElement,
+      eventTargetCanvas,
       this._mapScene.threeScene
     );
 
@@ -34,6 +34,8 @@ export class MapController {
     this._mapSelector.on('click', (event) => {
       this._mapScene.onClick(event.position.x, event.position.y);
     });
+
+    this._mapSelector.setActive(true);
   }
 
   public setSize(width: number, height: number) {

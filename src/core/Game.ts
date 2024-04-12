@@ -53,7 +53,7 @@ export class Game {
         // globalContext.pixiApp.renderer.events.setTargetElement(gameOptions.townCanvas);
         globalContext.pixiApp.ticker.add(this.tick.bind(this));
       });
-    globalContext.mapController = new MapController(gameOptions.townCanvas);
+    globalContext.mapController = new MapController(gameOptions.townCanvas, gameOptions.uiCanvas);
     globalContext.mapController.setSize(
       globalContext.windowInfo.width,
       globalContext.windowInfo.height
