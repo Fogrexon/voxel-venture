@@ -3,14 +3,14 @@ export class VVEvent<T extends Record<string, any>> {
     [K in keyof T]?: Set<(value: T[K]) => void>;
   } = {};
 
-  public on(key: keyof T, listener: (value: T[typeof key]) => void) {
+  public on<U extends keyof T>(key: U, listener: (value: T[U]) => void) {
     if (!this._listeners[key]) {
       this._listeners[key] = new Set();
     }
     this._listeners[key]!.add(listener);
   }
 
-  public off(key: keyof T, listener: (value: T[typeof key]) => void) {
+  public off<U extends keyof T>(key: U, listener: (value: T[U]) => void) {
     this._listeners[key]?.delete(listener);
   }
 

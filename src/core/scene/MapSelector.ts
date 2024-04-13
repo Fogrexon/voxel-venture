@@ -1,5 +1,6 @@
 import { Camera, Object3D, Raycaster, Vector2 } from 'three';
 import { EventEmitter } from 'pixi.js';
+import { wait } from '../../util/wait';
 
 export type MapSelectorEvent = {
   hover: {
@@ -42,6 +43,10 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
   // アクティブ直後はleaveイベントを発火しないようにするためのフラグ
   private _skipLeave = false;
 
+  private _handleMouseMoveCache = this.handleMouseMove.bind(this);
+
+  private _handleMouseClickCache = this.handleMouseClick.bind(this);
+
   constructor(camera: Camera, canvas: HTMLCanvasElement, selectionPlane: Object3D) {
     super();
     this._camera = camera;
@@ -50,7 +55,7 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
     this._raycaster = new Raycaster();
   }
 
-  private handleMouseMove(event: MouseEvent) {
+  public handleMouseMove(event: MouseEvent) {
     const rect = this._canvas.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -88,7 +93,7 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
     }
   }
 
-  private handleMouseClick(event: MouseEvent) {
+  public handleMouseClick(event: MouseEvent) {
     if (event.button === 0) {
       this.emit('click', {
         position: {
@@ -99,11 +104,13 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
     }
   }
 
-  public setActive(active: boolean) {
+  public async setActive(active: boolean) {
     if (this._active === active) return;
     if (active) {
-      this._canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-      this._canvas.addEventListener('click', this.handleMouseClick.bind(this));
+      // モード開始時のクリックイベントを発火させないように、少し待ってからイベントリスナーを登録する
+      await wait(100);
+      this._canvas.addEventListener('mousemove', this._handleMouseMoveCache);
+      this._canvas.addEventListener('click', this._handleMouseClickCache);
     } else {
       this.emit('leave', {
         position: {
@@ -113,8 +120,10 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
       });
       this._skipLeave = true;
 
-      this._canvas.removeEventListener('mousemove', this.handleMouseMove.bind(this));
-      this._canvas.removeEventListener('click', this.handleMouseClick.bind(this));
+      if (this._handleMouseMoveCache && this._handleMouseClickCache) {
+        this._canvas.removeEventListener('mousemove', this._handleMouseMoveCache);
+        this._canvas.removeEventListener('click', this._handleMouseClickCache);
+      }
     }
     this._active = active;
   }

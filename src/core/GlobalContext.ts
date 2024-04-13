@@ -15,15 +15,22 @@ export type DataChangedEventTable = {
   };
 };
 
+export type MapSelectionContext = {
+  selectionType: 'place' | 'remove';
+  officeType?: string;
+};
+
 // 3D空間のマップとUIの間の通信はこのイベントを通じて行われる
 export type InterfaceEventTable = {
   'map-selection-start': {
     office: boolean;
     emptyRot: boolean;
+    context: MapSelectionContext;
   };
   'map-selected': {
     x: number;
     y: number;
+    context: MapSelectionContext;
   };
 };
 

@@ -2,6 +2,7 @@ import { WebGLRenderer } from 'three';
 import { MapSelector } from './MapSelector';
 import { MapScene } from './MapScene';
 import { MapControlCamera } from './MapControlCamera';
+import { globalContext, MapSelectionContext } from '../GlobalContext';
 
 export class MapController {
   private _threeRenderer: WebGLRenderer;
@@ -11,6 +12,8 @@ export class MapController {
   private _mapScene: MapScene;
 
   private _mapSelector: MapSelector;
+
+  private _context: MapSelectionContext | null = null;
 
   constructor(renderTargetCanvas: HTMLCanvasElement, eventTargetCanvas: HTMLCanvasElement) {
     this._threeRenderer = new WebGLRenderer({
@@ -35,7 +38,33 @@ export class MapController {
       this._mapScene.onClick(event.position.x, event.position.y);
     });
 
+    this._mapSelector.setActive(false);
+
+    globalContext.gameState.interfaceEvent.on('map-selection-start', (event) => {
+      this._context = event.context;
+      this.activateSelector();
+    });
+    this._mapSelector.on('click', (event) => {
+      if (!this._context) {
+        throw new Error('context is not defined');
+      }
+      globalContext.gameState.interfaceEvent.emit('map-selected', {
+        x: event.position.x,
+        y: event.position.y,
+        context: this._context,
+      });
+      this.deactivateSelector();
+    });
+  }
+
+  private activateSelector() {
     this._mapSelector.setActive(true);
+    this._mapControlCamera.active = false;
+  }
+
+  private deactivateSelector() {
+    this._mapSelector.setActive(false);
+    this._mapControlCamera.active = true;
   }
 
   public setSize(width: number, height: number) {
