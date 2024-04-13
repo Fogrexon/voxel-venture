@@ -1,7 +1,7 @@
-import { Application, Ticker } from 'pixi.js';
+import { Ticker } from 'pixi.js';
 import { ImageStore } from './asset/ImageStore';
 import { globalContext } from './GlobalContext';
-import { ScreenSwitcher } from './ui/ScreenSwitcher';
+import { UIController } from './ui/UIController';
 import { IScreen } from './ui/IScreen';
 import { GameParameter } from './logic/GameParameter';
 import { OfficeTree } from './logic/OfficeTree';
@@ -38,26 +38,8 @@ export class Game {
     gameOptions.townCanvas.style.left = '0';
 
     // setup pixi and three
-    globalContext.pixiApp = new Application();
-    globalContext.pixiApp
-      .init({
-        view: gameOptions.uiCanvas,
-        width: globalContext.windowInfo.width,
-        height: globalContext.windowInfo.height,
-        // background: 0xffffff,
-        backgroundAlpha: 0,
-        autoStart: true,
-      })
-      .then(() => {
-        // レンダラの初期化はpromiseを待たないといけない
-        // globalContext.pixiApp.renderer.events.setTargetElement(gameOptions.townCanvas);
-        globalContext.pixiApp.ticker.add(this.tick.bind(this));
-      });
+    globalContext.uiController = new UIController(gameOptions.uiCanvas);
     globalContext.mapController = new MapController(gameOptions.townCanvas, gameOptions.uiCanvas);
-    globalContext.mapController.setSize(
-      globalContext.windowInfo.width,
-      globalContext.windowInfo.height
-    );
 
     // game管理系コンポーネントの初期化
     globalContext.imageStore = gameOptions.imageStore;
@@ -82,17 +64,21 @@ export class Game {
     document.title = globalContext.windowInfo.title;
 
     // global contextが構築に必要な処理
-    globalContext.screenSwitcher = new ScreenSwitcher();
+    globalContext.uiController = new UIController(gameOptions.uiCanvas);
     Object.entries(gameOptions.screens).forEach(([name, createScreen]) => {
       const screen = createScreen();
-      globalContext.screenSwitcher.registerScreen(name, screen);
-      globalContext.pixiApp.stage.addChild(screen.root);
+      globalContext.uiController.registerScreen(name, screen);
     });
   }
 
   public start() {
+    globalContext.uiController.init(this.tick.bind(this));
+    globalContext.mapController.setSize(
+      globalContext.windowInfo.width,
+      globalContext.windowInfo.height
+    );
     globalContext.mapController.start();
-    globalContext.screenSwitcher.showScreen(this._gameOptions.initialScreen);
+    globalContext.uiController.showScreen(this._gameOptions.initialScreen);
   }
 
   public tick(ticker: Ticker) {

@@ -1,5 +1,4 @@
-import { Application } from 'pixi.js';
-import { ScreenSwitcher } from './ui/ScreenSwitcher';
+import { UIController } from './ui/UIController';
 import { ImageStore } from './asset/ImageStore';
 import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
@@ -7,9 +6,8 @@ import { GameParameter } from './logic/GameParameter';
 import { MapController } from './scene/MapController';
 
 export type GlobalContext = {
-  pixiApp: Application;
   mapController: MapController;
-  screenSwitcher: ScreenSwitcher;
+  uiController: UIController;
   imageStore: ImageStore;
   officeTree: OfficeTree;
   officeMap: OfficeMap;
@@ -28,9 +26,8 @@ export type GlobalContext = {
 
 // globalContextは正しく設定されたうえでゲームが開始されることが保証されているので、nullを握りつぶす
 export const globalContext: GlobalContext = {
-  pixiApp: null as unknown as Application,
   mapController: null as unknown as MapController,
-  screenSwitcher: null as unknown as ScreenSwitcher,
+  uiController: null as unknown as UIController,
   imageStore: null as unknown as ImageStore,
   officeTree: null as unknown as OfficeTree,
   officeMap: null as unknown as OfficeMap,
