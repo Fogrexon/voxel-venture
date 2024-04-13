@@ -2,7 +2,6 @@ import { Container } from 'pixi.js';
 import gsap from 'gsap';
 import { IScreen } from '../../../core/ui/IScreen';
 import { createSettingButton } from './main/buttons';
-import { globalContext } from '../../../core/GlobalContext';
 
 export class MainScreen implements IScreen {
   private _root: Container = new Container();
@@ -23,13 +22,11 @@ export class MainScreen implements IScreen {
   public async show() {
     this._root.visible = true;
     this._root.alpha = 0;
-    globalContext.mapControlCamera.active = true;
     await gsap.to(this._root, { alpha: 1, duration: 0.3 });
   }
 
   public async hide() {
     await gsap.to(this._root, { alpha: 0, duration: 0.3 });
-    globalContext.mapControlCamera.active = false;
     this._root.visible = false;
   }
 }

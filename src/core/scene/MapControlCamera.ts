@@ -34,6 +34,7 @@ export class MapControlCamera {
 
   constructor() {
     this.threeCamera = new OrthographicCamera();
+    this.threeCamera.zoom = 0.1;
     this.threeCamera.position.set(10, 10, 10);
     this.threeCamera.lookAt(0, 0, 0);
 

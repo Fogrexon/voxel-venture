@@ -1,6 +1,6 @@
 import { Queue } from '../../util/Queue';
 import { globalContext } from '../GlobalContext';
-import { ProductId } from './GameParameter';
+import { OfficeTypeId, ProductId } from './GameParameter';
 
 export type Product = {
   readonly productId: ProductId;
@@ -20,7 +20,7 @@ export type SellResult = {
 };
 
 export class Office {
-  public readonly type: string;
+  public readonly type: OfficeTypeId;
 
   public readonly builtAt: number;
 

@@ -12,7 +12,7 @@ export const createCloseButton = () => {
   const closeButton = new Button(closeButtonGraphic);
 
   closeButton.onPress.connect(() => {
-    globalContext.screenSwitcher.showScreen('main');
+    globalContext.uiController.showScreen('main');
   });
 
   return closeButton;
