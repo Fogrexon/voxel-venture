@@ -1,6 +1,6 @@
 import { Button } from '@pixi/ui';
 import { Graphics } from 'pixi.js';
-import { globalContext } from '../../../../core/GlobalContext';
+import { globalContext } from '../../../GlobalContext';
 
 export const createSettingButton = () => {
   const button = new Button(new Graphics().roundRect(0, 0, 100, 50, 15).fill(0x444444));

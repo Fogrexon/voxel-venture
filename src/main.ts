@@ -3,9 +3,9 @@ import { PixiPlugin } from 'gsap/PixiPlugin';
 import { Game } from './core/Game';
 import { loading } from './loading';
 import { ImageStore } from './core/asset/ImageStore';
-import { IMAGE_RESOURCES } from './level/resources';
-import { screens } from './level/screens';
-import { gameParameters } from './level/parameters';
+import { IMAGE_RESOURCES } from './option/resources';
+import { screens } from './option/screens';
+import { gameParameters } from './option/parameters';
 
 gsap.registerPlugin(PixiPlugin);
 

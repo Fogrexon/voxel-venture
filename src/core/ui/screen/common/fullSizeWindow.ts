@@ -1,6 +1,6 @@
 import { Container } from 'pixi.js';
-import { globalContext } from '../../../core/GlobalContext';
-import { GUIWindow } from '../../../core/ui/common/GUIWindow';
+import { globalContext } from '../../../GlobalContext';
+import { GUIWindow } from '../../common/GUIWindow';
 
 const WINDOW_PARAMS = {
   widthRate: 0.95,

@@ -4,6 +4,28 @@ import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
 import { GameParameter } from './logic/GameParameter';
 import { MapController } from './scene/MapController';
+import { VVEvent } from '../util/VVEvent';
+
+// データの変更とインターフェースの間の通信はこのイベントを通じて行われる
+export type DataChangedEventTable = {
+  'get-money': {
+    earned: number;
+    from: 'office';
+    officePosition: { x: number; y: number };
+  };
+};
+
+// 3D空間のマップとUIの間の通信はこのイベントを通じて行われる
+export type InterfaceEventTable = {
+  'map-selection-start': {
+    office: boolean;
+    emptyRot: boolean;
+  };
+  'map-selected': {
+    x: number;
+    y: number;
+  };
+};
 
 export type GlobalContext = {
   mapController: MapController;
@@ -18,6 +40,8 @@ export type GlobalContext = {
     title: string;
   };
   gameState: {
+    interfaceEvent: VVEvent<InterfaceEventTable>;
+    dataChangedEvent: VVEvent<DataChangedEventTable>;
     money: number;
     time: number;
   };
@@ -38,6 +62,8 @@ export const globalContext: GlobalContext = {
     title: 'VoxelVenture',
   },
   gameState: {
+    interfaceEvent: new VVEvent<InterfaceEventTable>(),
+    dataChangedEvent: new VVEvent<DataChangedEventTable>(),
     money: 100,
     time: 0,
   },

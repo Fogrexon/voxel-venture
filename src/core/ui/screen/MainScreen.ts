@@ -1,6 +1,6 @@
 import { Container } from 'pixi.js';
 import gsap from 'gsap';
-import { IScreen } from '../../../core/ui/IScreen';
+import { IScreen } from '../IScreen';
 import { createSettingButton } from './main/buttons';
 
 export class MainScreen implements IScreen {
