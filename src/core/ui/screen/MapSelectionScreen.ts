@@ -31,6 +31,7 @@ export class MapSelectionScreen implements IScreen {
       throw new Error('officeType is not defined');
     }
     globalContext.officeMap.registerOffice(event.x, event.y, officeType);
+    globalContext.uiController.showScreen('main');
   }
 
   public async show(): Promise<void> {

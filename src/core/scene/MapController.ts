@@ -25,7 +25,8 @@ export class MapController {
     this._mapSelector = new MapSelector(
       this._mapControlCamera.threeCamera,
       eventTargetCanvas,
-      this._mapScene.threeScene
+      this._mapScene.threeScene,
+      this._mapScene.cursorObject
     );
 
     this._mapSelector.on('hover', (event) => {
@@ -38,11 +39,11 @@ export class MapController {
       this._mapScene.onClick(event.position.x, event.position.y);
     });
 
-    this._mapSelector.setActive(false);
+    this._mapSelector.setActive(false, false);
 
     globalContext.gameState.interfaceEvent.on('map-selection-start', (event) => {
       this._context = event.context;
-      this.activateSelector();
+      this.activateSelector(event.office, event.emptyRot);
     });
     this._mapSelector.on('click', (event) => {
       if (!this._context) {
@@ -57,14 +58,14 @@ export class MapController {
     });
   }
 
-  private activateSelector() {
-    this._mapSelector.setActive(true);
-    this._mapControlCamera.active = false;
+  private activateSelector(office: boolean, emptyRot: boolean) {
+    this._mapSelector.setActive(office, emptyRot);
+    // this._mapControlCamera.active = false;
   }
 
   private deactivateSelector() {
-    this._mapSelector.setActive(false);
-    this._mapControlCamera.active = true;
+    this._mapSelector.setActive(false, false);
+    // this._mapControlCamera.active = true;
   }
 
   public setSize(width: number, height: number) {
