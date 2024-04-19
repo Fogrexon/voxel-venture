@@ -45,6 +45,8 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
 
   private _emptyRotActive = false;
 
+  private _pause = false;
+
   // アクティブ直後はleaveイベントを発火しないようにするためのフラグ
   private _skipLeave = false;
 
@@ -67,6 +69,7 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
   }
 
   public handleMouseMove(event: MouseEvent) {
+    if (this._pause) return;
     const rect = this._canvas.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -106,6 +109,7 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
   }
 
   public handleMouseClick(event: MouseEvent) {
+    if (this._pause) return;
     if (event.button === 0) {
       const office = globalContext.officeMap.map.get(this._selected.x, this._selected.y);
       if ((this._officeSelectActive && office) || (this._emptyRotActive && !office)) {
@@ -146,5 +150,9 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
     }
     this._officeSelectActive = office;
     this._emptyRotActive = emptyRot;
+  }
+
+  public setPause(pause: boolean) {
+    this._pause = pause;
   }
 }

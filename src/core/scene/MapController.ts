@@ -54,7 +54,15 @@ export class MapController {
         y: event.position.y,
         context: this._context,
       });
+    });
+    globalContext.gameState.interfaceEvent.on('map-selection-end', () => {
       this.deactivateSelector();
+    });
+    globalContext.gameState.interfaceEvent.on('map-selection-pause', () => {
+      this._mapSelector.setPause(true);
+    });
+    globalContext.gameState.interfaceEvent.on('map-selection-resume', () => {
+      this._mapSelector.setPause(false);
     });
   }
 

@@ -30,6 +30,14 @@ export class MapSelectionScreen implements IScreen {
     if (!officeType) {
       throw new Error('officeType is not defined');
     }
+    const officeParams = globalContext.officeTree.getOfficeParams(officeType);
+    if (!officeParams) {
+      throw new Error('officeParams is not defined');
+    }
+    if (globalContext.gameState.money < officeParams.buildCost) {
+      await globalContext.uiController.openAlert('お金が足りません');
+      return;
+    }
     globalContext.officeMap.registerOffice(event.x, event.y, officeType);
     globalContext.uiController.showScreen('main');
   }
@@ -42,6 +50,7 @@ export class MapSelectionScreen implements IScreen {
 
   public async hide(): Promise<void> {
     globalContext.gameState.interfaceEvent.off('map-selected', this._handleMapSelectCache);
+    globalContext.gameState.interfaceEvent.emit('map-selection-end', {});
     await gsap.to(this._buttonWrapper.position, { y: -50, duration: 0.3 });
     this._root.visible = false;
   }

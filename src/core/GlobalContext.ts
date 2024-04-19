@@ -32,6 +32,9 @@ export type InterfaceEventTable = {
     y: number;
     context: MapSelectionContext;
   };
+  'map-selection-end': {};
+  'map-selection-pause': {};
+  'map-selection-resume': {};
 };
 
 export type GlobalContext = {
