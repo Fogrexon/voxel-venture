@@ -1,7 +1,7 @@
 import { Container } from 'pixi.js';
 import gsap from 'gsap';
-import { IScreen } from '../../../core/ui/IScreen';
-import { createSettingButton } from './main/buttons';
+import { IScreen } from '../IScreen';
+import { createOfficeSelectionButton, createSettingButton } from './main/buttons';
 
 export class MainScreen implements IScreen {
   private _root: Container = new Container();
@@ -14,9 +14,12 @@ export class MainScreen implements IScreen {
 
   private _settingButton = createSettingButton();
 
+  private _officeSelectButton = createOfficeSelectionButton();
+
   constructor() {
     this._root.addChild(this._buttons);
     this._buttons.addChild(this._settingButton.view);
+    this._buttons.addChild(this._officeSelectButton.view);
   }
 
   public async show() {

@@ -1,6 +1,6 @@
 import { Sprite, Texture } from 'pixi.js';
 import { Button } from '@pixi/ui';
-import { globalContext } from '../../../core/GlobalContext';
+import { globalContext } from '../../../GlobalContext';
 
 export const createCloseButton = () => {
   const closeButtonTexture = Texture.from(globalContext.imageStore.get('ui/cross.png'));

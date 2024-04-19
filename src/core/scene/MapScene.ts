@@ -8,7 +8,7 @@ export class MapScene {
 
   private readonly _officeModels: TwoKeyMap<number, number, OfficeModel> = new TwoKeyMap();
 
-  private readonly _emptyAreaModel = new Group();
+  public readonly cursorObject = new Group();
 
   public readonly threeScene: Scene = new Scene();
 
@@ -33,14 +33,15 @@ export class MapScene {
 
     this._root.add(roadMesh);
 
-    const emptyAreaMesh = new Mesh(
+    const cursorObject = new Mesh(
       new BoxGeometry(1, 1, 1),
       new MeshBasicMaterial({ color: 0x000000, opacity: 0.5, transparent: true })
     );
-    emptyAreaMesh.scale.set(1, 0.01, 1);
-    emptyAreaMesh.position.y = 0.01;
-    this._emptyAreaModel.add(emptyAreaMesh);
-    this._root.add(this._emptyAreaModel);
+    cursorObject.scale.set(1, 0.01, 1);
+    cursorObject.position.y = 0.01;
+    this.cursorObject.add(cursorObject);
+    this.cursorObject.visible = false;
+    this._root.add(this.cursorObject);
   }
 
   public rebuildMap() {

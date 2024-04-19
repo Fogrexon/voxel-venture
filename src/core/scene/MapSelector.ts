@@ -1,5 +1,7 @@
 import { Camera, Object3D, Raycaster, Vector2 } from 'three';
 import { EventEmitter } from 'pixi.js';
+import { wait } from '../../util/wait';
+import { globalContext } from '../GlobalContext';
 
 export type MapSelectorEvent = {
   hover: {
@@ -29,6 +31,8 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
 
   private readonly _selectionPlane: Object3D;
 
+  private readonly _cursorObject: Object3D;
+
   private readonly _raycaster: Raycaster = new Raycaster();
 
   private readonly _selected = new Vector2();
@@ -37,20 +41,35 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
 
   private readonly _tempVec = new Vector2();
 
-  private _active = false;
+  private _officeSelectActive = false;
+
+  private _emptyRotActive = false;
+
+  private _pause = false;
 
   // アクティブ直後はleaveイベントを発火しないようにするためのフラグ
   private _skipLeave = false;
 
-  constructor(camera: Camera, canvas: HTMLCanvasElement, selectionPlane: Object3D) {
+  private _handleMouseMoveCache = this.handleMouseMove.bind(this);
+
+  private _handleMouseClickCache = this.handleMouseClick.bind(this);
+
+  constructor(
+    camera: Camera,
+    canvas: HTMLCanvasElement,
+    selectionPlane: Object3D,
+    cursorObject: Object3D
+  ) {
     super();
     this._camera = camera;
     this._canvas = canvas;
     this._selectionPlane = selectionPlane;
+    this._cursorObject = cursorObject;
     this._raycaster = new Raycaster();
   }
 
-  private handleMouseMove(event: MouseEvent) {
+  public handleMouseMove(event: MouseEvent) {
+    if (this._pause) return;
     const rect = this._canvas.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -84,26 +103,36 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
             y: this._selected.y,
           },
         });
+        this._cursorObject.position.set(this._selected.x, 0, this._selected.y);
       }
     }
   }
 
-  private handleMouseClick(event: MouseEvent) {
+  public handleMouseClick(event: MouseEvent) {
+    if (this._pause) return;
     if (event.button === 0) {
-      this.emit('click', {
-        position: {
-          x: this._selected.x,
-          y: this._selected.y,
-        },
-      });
+      const office = globalContext.officeMap.map.get(this._selected.x, this._selected.y);
+      if ((this._officeSelectActive && office) || (this._emptyRotActive && !office)) {
+        this.emit('click', {
+          position: {
+            x: this._selected.x,
+            y: this._selected.y,
+          },
+        });
+      }
     }
   }
 
-  public setActive(active: boolean) {
-    if (this._active === active) return;
-    if (active) {
-      this._canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-      this._canvas.addEventListener('click', this.handleMouseClick.bind(this));
+  public async setActive(office: boolean, emptyRot: boolean) {
+    const prevActive = this._officeSelectActive || this._emptyRotActive;
+    const nextActive = office || emptyRot;
+    if (prevActive && nextActive) return;
+    if (nextActive) {
+      // モード開始時のクリックイベントを発火させないように、少し待ってからイベントリスナーを登録する
+      await wait(100);
+      this._canvas.addEventListener('mousemove', this._handleMouseMoveCache);
+      this._canvas.addEventListener('click', this._handleMouseClickCache);
+      this._cursorObject.visible = true;
     } else {
       this.emit('leave', {
         position: {
@@ -113,9 +142,17 @@ export class MapSelector extends EventEmitter<MapSelectorEvent> {
       });
       this._skipLeave = true;
 
-      this._canvas.removeEventListener('mousemove', this.handleMouseMove.bind(this));
-      this._canvas.removeEventListener('click', this.handleMouseClick.bind(this));
+      if (this._handleMouseMoveCache && this._handleMouseClickCache) {
+        this._canvas.removeEventListener('mousemove', this._handleMouseMoveCache);
+        this._canvas.removeEventListener('click', this._handleMouseClickCache);
+      }
+      this._cursorObject.visible = false;
     }
-    this._active = active;
+    this._officeSelectActive = office;
+    this._emptyRotActive = emptyRot;
+  }
+
+  public setPause(pause: boolean) {
+    this._pause = pause;
   }
 }
