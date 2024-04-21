@@ -39,6 +39,7 @@ export class MapSelectionScreen implements IScreen {
       return;
     }
     globalContext.officeMap.registerOffice(event.x, event.y, officeType);
+    globalContext.uiController.sendNotification('オフィスを建設しました');
     globalContext.uiController.showScreen('main');
   }
 

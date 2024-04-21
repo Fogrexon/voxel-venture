@@ -7,7 +7,6 @@ import { GameParameter } from './logic/GameParameter';
 import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
 import { MapController } from './scene/MapController';
-import { wait } from '../util/wait';
 
 export type GameOptions = {
   uiCanvas: HTMLCanvasElement;
@@ -48,18 +47,6 @@ export class Game {
 
     globalContext.officeTree = new OfficeTree(globalContext.gameParameters);
     globalContext.officeMap = new OfficeMap();
-
-    // TODO: テスト用に追加しただけなので消す
-    for (let x = -5; x < 5; x += 1) {
-      for (let y = -5; y < 5; y += 1) {
-        (async () => {
-          await wait((Math.abs(x) + Math.abs(y)) * 100);
-          globalContext.officeMap.registerOffice(x, y, 'screw');
-          globalContext.mapController.rebuildMap();
-        })();
-        // eslint-disable-next-line no-await-in-loop
-      }
-    }
 
     document.title = globalContext.windowInfo.title;
 
