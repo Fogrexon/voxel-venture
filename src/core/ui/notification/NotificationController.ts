@@ -1,6 +1,10 @@
 import { Notification } from './Notification';
 import { Queue } from '../../../util/Queue';
 
+const NOTIFICATION_CONFIGS = {
+  animationDuration: 5,
+};
+
 export type NotificationData = {
   text: string;
 };
@@ -37,7 +41,10 @@ export class NotificationController {
     let queueData = this._notificationQueue.dequeue();
     while (queueData) {
       // eslint-disable-next-line no-await-in-loop
-      await this._notification.show(queueData.text);
+      await this._notification.show(
+        queueData.text,
+        NOTIFICATION_CONFIGS.animationDuration * Math.exp(-this._notificationQueue.length * 0.1)
+      );
       queueData = this._notificationQueue.dequeue();
     }
     this._isNotificationShowing = false;

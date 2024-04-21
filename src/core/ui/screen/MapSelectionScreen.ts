@@ -34,7 +34,7 @@ export class MapSelectionScreen implements IScreen {
     if (!officeParams) {
       throw new Error('officeParams is not defined');
     }
-    if (globalContext.gameState.money < officeParams.buildCost) {
+    if (!globalContext.gameState.budget.canUseFund(officeParams.buildCost)) {
       await globalContext.uiController.openAlert('お金が足りません');
       return;
     }
