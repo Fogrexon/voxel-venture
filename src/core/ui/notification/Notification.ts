@@ -68,7 +68,7 @@ export class Notification {
     this.view.addChild(this._text);
   }
 
-  public async show(text: string) {
+  public async show(text: string, duration: number) {
     if (!this._text) {
       throw new Error('Notification text is not initialized');
     }
@@ -76,10 +76,10 @@ export class Notification {
     this.view.visible = true;
     await gsap.to(this.view, {
       x: globalContext.windowInfo.width - NOTIFICATION_CONFIGS.width,
-      duration: 0.5,
+      duration: duration * 0.2,
     });
-    await wait(2000);
-    await gsap.to(this.view, { x: globalContext.windowInfo.width, duration: 0.5 });
+    await wait(duration * 0.6 * 1000);
+    await gsap.to(this.view, { x: globalContext.windowInfo.width, duration: duration * 0.2 });
     this.view.visible = false;
   }
 }
