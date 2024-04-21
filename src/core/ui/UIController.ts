@@ -49,20 +49,25 @@ export class UIController {
     });
     this._pixiApp.ticker.add(tick);
 
+    // setup money effect
+    this._moneyEffectController.init();
+    this._moneyEffectController.root.zIndex = -50;
+    this._pixiApp.stage.addChild(this._moneyEffectController.root);
+
+    // setup screen container
     this._pixiApp.stage.addChild(this._screenContainer);
 
+    // setup notification
     this._notificationController.init();
     this._notificationController.view.zIndex = 50;
     this._pixiApp.stage.addChild(this._notificationController.view);
 
-    this._moneyEffectController.init();
-    this._moneyEffectController.root.zIndex = 60;
-    this._pixiApp.stage.addChild(this._moneyEffectController.root);
-
+    // setup modal
     this._alert.init();
     this._alert.root.zIndex = 100;
     this._pixiApp.stage.addChild(this._alert.root);
 
+    // setup confirm
     this._confirm.init();
     this._confirm.root.zIndex = 100;
     this._pixiApp.stage.addChild(this._confirm.root);

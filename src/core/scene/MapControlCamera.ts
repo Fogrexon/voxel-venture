@@ -142,7 +142,7 @@ export class MapControlCamera {
   }
 
   public getScreenPosition({ x, y }: { x: number; y: number }) {
-    this._tempVector = new Vector3(x, y, 0);
+    this._tempVector = new Vector3(x, 0, y);
     this._tempVector.project(this.threeCamera);
     return {
       x: (this._tempVector.x * 0.5 + 0.5) * globalContext.windowInfo.width,

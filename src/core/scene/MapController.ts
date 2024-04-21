@@ -41,6 +41,7 @@ export class MapController {
 
     this._mapSelector.setActive(false, false);
 
+    // setup interface event
     globalContext.gameState.interfaceEvent.on('map-selection-start', (event) => {
       this._context = event.context;
       this.activateSelector(event.office, event.emptyRot);
@@ -63,6 +64,11 @@ export class MapController {
     });
     globalContext.gameState.interfaceEvent.on('map-selection-resume', () => {
       this._mapSelector.setPause(false);
+    });
+
+    // setup data changed event
+    globalContext.gameState.dataChangedEvent.on('office-build', (event) => {
+      this._mapScene.buildOffice(event.position.x, event.position.y, event.type);
     });
   }
 
@@ -91,10 +97,6 @@ export class MapController {
 
   public render() {
     this._threeRenderer.render(this._mapScene.threeScene, this._mapControlCamera.threeCamera);
-  }
-
-  public rebuildMap() {
-    this._mapScene.rebuildMap();
   }
 
   public getScreenPosition(position: { x: number; y: number }) {

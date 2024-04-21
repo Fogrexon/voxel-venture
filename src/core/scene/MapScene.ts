@@ -2,6 +2,7 @@ import { BoxGeometry, Group, Mesh, MeshBasicMaterial, PlaneGeometry, Scene } fro
 import { globalContext } from '../GlobalContext';
 import { OfficeModel } from './office/OfficeModel';
 import { TwoKeyMap } from '../../util/TwoKeyMap';
+import { OfficeTypeId } from '../logic/GameParameter';
 
 export class MapScene {
   private readonly _root: Group = new Group();
@@ -43,26 +44,13 @@ export class MapScene {
     this._root.add(this.cursorObject);
   }
 
-  public rebuildMap() {
-    const officeMap = globalContext.officeMap.map;
-
-    officeMap.iterate(async (x, y, officeData) => {
-      const model = this._officeModels.get(x, y);
-      if (model?.type === officeData.type) {
-        return;
-      }
-      if (model) {
-        this._root.remove(model.root);
-        this._officeModels.delete(x, y);
-      }
-
-      // TODO: 店のタイプに応じてモデルを変える仕組みを考える
-      const newModel = new OfficeModel(officeData.type);
-      this._root.add(newModel.root);
-      this._officeModels.set(x, y, newModel);
-      newModel.setPosition(x, y);
-      newModel.popAnimation();
-    });
+  public buildOffice(x: number, y: number, type: OfficeTypeId) {
+    // TODO: 店のタイプに応じてモデルを変える仕組みを考える
+    const newModel = new OfficeModel(type);
+    this._root.add(newModel.root);
+    this._officeModels.set(x, y, newModel);
+    newModel.setPosition(x, y);
+    newModel.popAnimation();
   }
 
   public onHover(x: number, y: number) {
