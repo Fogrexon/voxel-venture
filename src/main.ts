@@ -1,16 +1,24 @@
 import gsap from 'gsap';
 import { PixiPlugin } from 'gsap/PixiPlugin';
+import { Texture as PixiTexture } from 'pixi.js';
+import { Texture as ThreeTexture, Group } from 'three';
 import { Game } from './core/Game';
 import { loading } from './loading';
-import { ImageStore } from './core/asset/ImageStore';
-import { IMAGE_RESOURCES } from './option/resources';
 import { screens } from './option/screens';
 import { gameParameters } from './option/parameters';
+import { AssetLoader } from './core/asset/AssetLoader';
+import {
+  pixiTextureLoadFunc,
+  threeModelLoadFunc,
+  threeTextureLoadFunc,
+} from './core/asset/loaders';
 
 gsap.registerPlugin(PixiPlugin);
 
 window.addEventListener('load', async () => {
-  const imageStore = new ImageStore();
+  const pixiTextureLoader = new AssetLoader<PixiTexture>(pixiTextureLoadFunc);
+  const threeTextureLoader = new AssetLoader<ThreeTexture>(threeTextureLoadFunc);
+  const threeModelLoader = new AssetLoader<Group>(threeModelLoadFunc);
 
   const uiCanvas = document.getElementById('ui') as HTMLCanvasElement;
   const townCanvas = document.getElementById('town') as HTMLCanvasElement;
@@ -19,12 +27,18 @@ window.addEventListener('load', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const pipMode = urlParams.get('pipMode') === 'true';
 
-  await loading(IMAGE_RESOURCES, imageStore);
+  await loading({
+    pixiTextureLoader,
+    threeTextureLoader,
+    threeModelLoader,
+  });
 
   const game = new Game({
     uiCanvas,
     townCanvas,
-    imageStore,
+    pixiTextureLoader,
+    threeTextureLoader,
+    threeModelLoader,
     screens,
     initialScreen: 'main',
     pipMode,

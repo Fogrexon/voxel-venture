@@ -1,6 +1,10 @@
 import { Ticker } from 'pixi.js';
-import { ImageStore } from './asset/ImageStore';
-import { globalContext } from './GlobalContext';
+import {
+  globalContext,
+  PixiTextureLoader,
+  ThreeModelLoader,
+  ThreeTextureLoader,
+} from './GlobalContext';
 import { UIController } from './ui/UIController';
 import { IScreen } from './ui/IScreen';
 import { GameParameter } from './logic/GameParameter';
@@ -11,7 +15,9 @@ import { MapController } from './scene/MapController';
 export type GameOptions = {
   uiCanvas: HTMLCanvasElement;
   townCanvas: HTMLCanvasElement;
-  imageStore: ImageStore;
+  pixiTextureLoader: PixiTextureLoader;
+  threeTextureLoader: ThreeTextureLoader;
+  threeModelLoader: ThreeModelLoader;
   screens: Record<string, () => IScreen>;
   initialScreen: string;
   pipMode?: boolean;
@@ -41,7 +47,9 @@ export class Game {
     globalContext.mapController = new MapController(gameOptions.townCanvas, gameOptions.uiCanvas);
 
     // game管理系コンポーネントの初期化
-    globalContext.imageStore = gameOptions.imageStore;
+    globalContext.pixiTextureLoader = gameOptions.pixiTextureLoader;
+    globalContext.threeTextureLoader = gameOptions.threeTextureLoader;
+    globalContext.threeModelLoader = gameOptions.threeModelLoader;
     globalContext.pipMode = gameOptions.pipMode ?? false;
     globalContext.gameParameters = gameOptions.gameParameters;
 

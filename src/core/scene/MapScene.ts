@@ -1,4 +1,4 @@
-import { BoxGeometry, Group, Mesh, MeshBasicMaterial, PlaneGeometry, Scene, Texture } from 'three';
+import { BoxGeometry, Group, Mesh, MeshBasicMaterial, PlaneGeometry, Scene } from 'three';
 import { globalContext } from '../GlobalContext';
 import { OfficeModel } from './office/OfficeModel';
 import { TwoKeyMap } from '../../util/TwoKeyMap';
@@ -17,8 +17,7 @@ export class MapScene {
   }
 
   public buildMap() {
-    const roadTexture = new Texture();
-    roadTexture.image = globalContext.imageStore.get('scene/road.png');
+    const roadTexture = globalContext.threeTextureLoader.get('scene/road.png');
     roadTexture.repeat.set(100, 100);
     roadTexture.wrapS = roadTexture.wrapT = 1000;
     roadTexture.offset.set(0.5, 0.5);

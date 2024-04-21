@@ -43,7 +43,7 @@ export class Notification {
     this._bg.view.position.set(0, -NOTIFICATION_CONFIGS.height / 2);
     this.view.addChild(this._bg.view);
 
-    this._icon = Sprite.from(globalContext.imageStore.get('ui/info-icon.png'));
+    this._icon = Sprite.from(globalContext.pixiTextureLoader.get('ui/info-icon.png'));
     this._icon.width = NOTIFICATION_CONFIGS.iconWidth;
     this._icon.height = NOTIFICATION_CONFIGS.iconWidth;
     this._icon.anchor.set(0.5, 0.5);
