@@ -4,6 +4,7 @@ import { globalContext } from '../GlobalContext';
 import { Alert } from './modal/Alert';
 import { Confirm } from './modal/Confirm';
 import { NotificationController } from './notification/NotificationController';
+import { MoneyEffectController } from './money/MoneyEffectController';
 
 /**
  * スクリーンの切り替えをつかさどるクラス
@@ -25,12 +26,15 @@ export class UIController {
 
   private _notificationController: NotificationController;
 
+  private _moneyEffectController: MoneyEffectController;
+
   constructor(uiCanvas: HTMLCanvasElement) {
     this._pixiApp = new Application();
     this._uiCanvas = uiCanvas;
     this._screens = {};
     this._screenContainer = new Container();
     this._notificationController = new NotificationController();
+    this._moneyEffectController = new MoneyEffectController();
     this._alert = new Alert();
     this._confirm = new Confirm();
   }
@@ -51,6 +55,10 @@ export class UIController {
     this._notificationController.view.zIndex = 50;
     this._pixiApp.stage.addChild(this._notificationController.view);
 
+    this._moneyEffectController.init();
+    this._moneyEffectController.root.zIndex = 60;
+    this._pixiApp.stage.addChild(this._moneyEffectController.root);
+
     this._alert.init();
     this._alert.root.zIndex = 100;
     this._pixiApp.stage.addChild(this._alert.root);
@@ -58,11 +66,6 @@ export class UIController {
     this._confirm.init();
     this._confirm.root.zIndex = 100;
     this._pixiApp.stage.addChild(this._confirm.root);
-
-    // テスト用コード 金かせいだ確認用
-    globalContext.gameState.dataChangedEvent.on('office-accounts', (event) => {
-      this.sendNotification(`オフィス更新: 利益${event.profit}, 損失${event.cost}`);
-    });
   }
 
   public registerScreen(name: string, screen: IScreen) {

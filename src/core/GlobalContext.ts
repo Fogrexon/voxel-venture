@@ -90,7 +90,7 @@ export const globalContext: GlobalContext = {
     dataChangedEvent: new VVEvent<DataChangedEventTable>(),
     budget: new BudgetManager(100, 100),
     time: 0,
-    timeParDay: 5,
+    timeParDay: 1,
   },
   pipMode: false,
 };

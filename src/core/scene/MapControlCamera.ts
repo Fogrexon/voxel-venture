@@ -1,4 +1,5 @@
 import { OrthographicCamera, Vector3 } from 'three';
+import { globalContext } from '../GlobalContext';
 
 const mapControlCameraConfig = {
   size: 1,
@@ -25,6 +26,8 @@ export class MapControlCamera {
     left: new Vector3(),
     right: new Vector3(),
   };
+
+  private _tempVector = new Vector3();
 
   private _zoomDelta = 0;
 
@@ -136,5 +139,14 @@ export class MapControlCamera {
     );
     this._zoomDelta = 0;
     this.threeCamera.updateProjectionMatrix();
+  }
+
+  public getScreenPosition({ x, y }: { x: number; y: number }) {
+    this._tempVector = new Vector3(x, y, 0);
+    this._tempVector.project(this.threeCamera);
+    return {
+      x: (this._tempVector.x * 0.5 + 0.5) * globalContext.windowInfo.width,
+      y: (-this._tempVector.y * 0.5 + 0.5) * globalContext.windowInfo.height,
+    };
   }
 }

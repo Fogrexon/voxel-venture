@@ -96,4 +96,8 @@ export class MapController {
   public rebuildMap() {
     this._mapScene.rebuildMap();
   }
+
+  public getScreenPosition(position: { x: number; y: number }) {
+    return this._mapControlCamera.getScreenPosition(position);
+  }
 }
