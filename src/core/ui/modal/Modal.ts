@@ -30,7 +30,7 @@ export const MODAL_CONFIGS = {
 export abstract class Modal {
   public readonly root: Container = new Container();
 
-  protected readonly modalBlocker: Graphics;
+  protected readonly modalBlocker: Graphics = new Graphics();
 
   protected readonly modal: Container = new Container();
 
@@ -38,9 +38,15 @@ export abstract class Modal {
 
   protected readonly titleText: Text = new Text();
 
+  private _title: string;
+
   public constructor(title: string) {
+    this._title = title;
+  }
+
+  public init() {
     // setup modal blocker
-    this.modalBlocker = new Graphics()
+    this.modalBlocker
       .rect(0, 0, globalContext.windowInfo.width, globalContext.windowInfo.height)
       .fill({
         color: MODAL_CONFIGS.blockerColor,
@@ -73,7 +79,7 @@ export abstract class Modal {
     this.modal.addChild(background.view);
 
     // setup title text
-    this.titleText.text = title;
+    this.titleText.text = this._title;
     this.titleText.style.fill = MODAL_CONFIGS.titleStyle.fill;
     this.titleText.style.fontSize = MODAL_CONFIGS.titleStyle.fontSize;
     this.titleText.anchor.set(0, 0);

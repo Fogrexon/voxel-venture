@@ -3,14 +3,18 @@ import { Modal, MODAL_CONFIGS } from './Modal';
 import { TextButton } from '../common/TextButton';
 
 export class Alert extends Modal {
-  private _alertText: Text;
+  private _alertText: Text | null = null;
 
-  private _okButton: TextButton;
+  private _okButton: TextButton | null = null;
 
   private _okButtonPressedResolve: ((flag: boolean) => void) | null = null;
 
   constructor() {
     super('Alert');
+  }
+
+  public init() {
+    super.init();
 
     this._alertText = new Text();
     this._alertText.style.wordWrap = true;
@@ -44,6 +48,9 @@ export class Alert extends Modal {
   }
 
   public setText(text: string) {
+    if (!this._alertText) {
+      throw new Error('Alert text is not initialized');
+    }
     this._alertText.text = text;
   }
 }

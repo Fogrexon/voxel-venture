@@ -3,6 +3,7 @@ import { IScreen } from './IScreen';
 import { globalContext } from '../GlobalContext';
 import { Alert } from './modal/Alert';
 import { Confirm } from './modal/Confirm';
+import { NotificationController } from './notification/NotificationController';
 
 /**
  * スクリーンの切り替えをつかさどるクラス
@@ -22,11 +23,14 @@ export class UIController {
 
   private _confirm: Confirm;
 
+  private _notificationController: NotificationController;
+
   constructor(uiCanvas: HTMLCanvasElement) {
     this._pixiApp = new Application();
     this._uiCanvas = uiCanvas;
     this._screens = {};
     this._screenContainer = new Container();
+    this._notificationController = new NotificationController();
     this._alert = new Alert();
     this._confirm = new Confirm();
   }
@@ -43,11 +47,17 @@ export class UIController {
 
     this._pixiApp.stage.addChild(this._screenContainer);
 
-    this._pixiApp.stage.addChild(this._alert.root);
-    this._alert.root.zIndex = 100;
+    this._notificationController.init();
+    this._notificationController.view.zIndex = 50;
+    this._pixiApp.stage.addChild(this._notificationController.view);
 
-    this._pixiApp.stage.addChild(this._confirm.root);
+    this._alert.init();
+    this._alert.root.zIndex = 100;
+    this._pixiApp.stage.addChild(this._alert.root);
+
+    this._confirm.init();
     this._confirm.root.zIndex = 100;
+    this._pixiApp.stage.addChild(this._confirm.root);
   }
 
   public registerScreen(name: string, screen: IScreen) {
@@ -83,5 +93,9 @@ export class UIController {
     const result = await this._confirm.show();
     this._screenContainer.interactiveChildren = true;
     return result;
+  }
+
+  public async sendNotification(text: string) {
+    this._notificationController.addNotification({ text });
   }
 }

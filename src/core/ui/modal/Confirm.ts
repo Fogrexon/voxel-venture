@@ -3,18 +3,21 @@ import { Modal, MODAL_CONFIGS } from './Modal';
 import { TextButton } from '../common/TextButton';
 
 export class Confirm extends Modal {
-  private _confirmText: Text;
+  private _confirmText: Text = new Text();
 
-  private _okButton: TextButton;
+  private _okButton: TextButton | null = null;
 
-  private _cancelButton: TextButton;
+  private _cancelButton: TextButton | null = null;
 
   private _okButtonPressedResolve: ((flag: boolean) => void) | null = null;
 
   constructor() {
     super('Confirm');
+  }
 
-    this._confirmText = new Text();
+  public init() {
+    super.init();
+
     this._confirmText.style.wordWrap = true;
     this._confirmText.style.wordWrapWidth = MODAL_CONFIGS.contentWidth;
     this._confirmText.anchor.set(0, 0);
