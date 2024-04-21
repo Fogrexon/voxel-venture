@@ -78,7 +78,7 @@ export class Office {
       profit,
       cost: runningCost,
       type: this.type,
-      position: { x: 0, y: 0 },
+      position: this.position,
     });
 
     return soldNum;
