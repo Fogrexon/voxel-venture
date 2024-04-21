@@ -78,11 +78,12 @@ export class Game {
 
   public tick(ticker: Ticker) {
     const deltaTime = ticker.deltaMS / 1000;
-    const prevIntTime = Math.floor(globalContext.gameState.time);
+    const { timeParDay } = globalContext.gameState;
+    const isDayChanged = (globalContext.gameState.time % timeParDay) + deltaTime >= timeParDay;
     globalContext.gameState.time += deltaTime;
-    const currentIntTime = Math.floor(globalContext.gameState.time);
-    if (currentIntTime !== prevIntTime) {
+    if (isDayChanged) {
       globalContext.officeMap.processAllOffice(1);
+      globalContext.officeMap.sellProduct();
     }
     globalContext.mapController.tick(deltaTime);
     globalContext.mapController.render();

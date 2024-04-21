@@ -37,12 +37,15 @@ export class OfficeTree {
     if (!this.unlockReadyBlueprints.includes(id)) {
       throw new Error(`Dependency not unlocked: ${id}`);
     }
-    if (globalContext.gameState.money < blueprint.cost) {
+    if (!globalContext.gameState.budget.canUseFund(blueprint.cost)) {
       throw new Error(`Not enough money: ${id}`);
     }
 
     // アンロック処理
-    globalContext.gameState.money -= blueprint.cost;
+    globalContext.gameState.budget.changeBudget('office-upgrade', {
+      cost: -blueprint.cost,
+      type: blueprint.officeType,
+    });
     this.unlockedBlueprints.push(id);
     this.unlockReadyBlueprints = this.unlockReadyBlueprints.filter((b) => b !== id);
     this.unlockReadyBlueprints.push(...blueprint.linkTo);
@@ -53,6 +56,7 @@ export class OfficeTree {
         this.officeParamsTable[blueprint.officeType] = {
           type: blueprint.officeType,
           buildCost: 0,
+          runningCost: 0,
           unitPrice: 0,
           maxCapacity: 0,
           productionRate: 0,

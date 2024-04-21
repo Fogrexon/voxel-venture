@@ -9,28 +9,21 @@ export type Product = {
   price: number;
 };
 
-export type ProduceResult = {
-  producedNum: number;
-  discardedNum: number;
-};
-
-export type SellResult = {
-  soldNum: number;
-  income: number;
-};
-
 export class Office {
   public readonly type: OfficeTypeId;
 
   public readonly builtAt: number;
 
+  public readonly position: { x: number; y: number };
+
   public readonly storage: Queue<Product>;
 
   private _productionProgress: number;
 
-  constructor(type: string, builtAt: number) {
+  constructor(type: string, position: { x: number; y: number }, builtAt: number) {
     this.type = type;
     this.builtAt = builtAt;
+    this.position = position;
     this.storage = new Queue();
     this._productionProgress = 0;
   }
@@ -39,7 +32,7 @@ export class Office {
    * 事業所の生産フェーズ
    * @param deltaTime
    */
-  public produce(deltaTime: number): ProduceResult {
+  public produce(deltaTime: number) {
     const { unitPrice, maxCapacity, productionRate, decayRate } =
       globalContext.officeTree.getOfficeParams(this.type);
 
@@ -60,20 +53,15 @@ export class Office {
         price: unitPrice,
       });
     }
-
-    return {
-      producedNum: producedItemNum,
-      discardedNum: discardedItemNum,
-    };
   }
 
   /**
    * 事業所の販売フェーズ
    * @param demandedNum
    */
-  public sell(demandedNum: number): SellResult {
+  public sell(demandedNum: number) {
     let soldNum = 0;
-    let income = 0;
+    let profit = 0;
 
     for (let i = 0; i < demandedNum; i += 1) {
       const product = this.storage.dequeue();
@@ -82,14 +70,17 @@ export class Office {
       }
       soldNum += 1;
       // TODO: 需要量に応じた価格設定
-      income += product.price;
+      profit += product.price;
     }
 
-    globalContext.gameState.money += income;
+    const { runningCost } = globalContext.officeTree.getOfficeParams(this.type);
+    globalContext.gameState.budget.changeBudget('office-accounts', {
+      profit,
+      cost: runningCost,
+      type: this.type,
+      position: { x: 0, y: 0 },
+    });
 
-    return {
-      soldNum,
-      income,
-    };
+    return soldNum;
   }
 }

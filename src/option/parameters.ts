@@ -24,6 +24,7 @@ export const gameParameters: GameParameter = {
       officeParams: {
         type: 'screw',
         buildCost: 1,
+        runningCost: 0.03,
         unitPrice: 1,
         maxCapacity: 10,
         productionRate: 1,

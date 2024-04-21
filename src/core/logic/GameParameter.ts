@@ -14,6 +14,7 @@ export type OfficeBlueprintId = string;
 export type OfficeParams = {
   type: string;
   buildCost: number;
+  runningCost: number;
   unitPrice: number;
   maxCapacity: number;
   productionRate: number;

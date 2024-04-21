@@ -7,13 +7,16 @@ import { GameParameter } from './logic/GameParameter';
 import { MapController } from './scene/MapController';
 import { VVEvent } from '../util/VVEvent';
 import { AssetLoader } from './asset/AssetLoader';
+import { BudgetManager, HandleBudgetEvent } from './logic/BudgetManager';
 
 // データの変更とインターフェースの間の通信はこのイベントを通じて行われる
-export type DataChangedEventTable = {
-  'get-money': {
-    earned: number;
-    from: 'office';
-    officePosition: { x: number; y: number };
+export type DataChangedEventTable = HandleBudgetEvent & {
+  'build-office': {
+    type: string;
+    position: { x: number; y: number };
+  };
+  'open-office-tree': {
+    blueprintId: string;
   };
 };
 
@@ -60,8 +63,9 @@ export type GlobalContext = {
   gameState: {
     interfaceEvent: VVEvent<InterfaceEventTable>;
     dataChangedEvent: VVEvent<DataChangedEventTable>;
-    money: number;
+    budget: BudgetManager;
     time: number;
+    timeParDay: number;
   };
   pipMode: boolean;
 };
@@ -84,8 +88,9 @@ export const globalContext: GlobalContext = {
   gameState: {
     interfaceEvent: new VVEvent<InterfaceEventTable>(),
     dataChangedEvent: new VVEvent<DataChangedEventTable>(),
-    money: 100,
+    budget: new BudgetManager(100, 100),
     time: 0,
+    timeParDay: 5,
   },
   pipMode: false,
 };

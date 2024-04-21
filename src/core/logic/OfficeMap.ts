@@ -12,13 +12,18 @@ export class OfficeMap {
     }
     const { buildCost } = globalContext.officeTree.getOfficeParams(type);
 
-    if (globalContext.gameState.money < buildCost) {
+    if (!globalContext.gameState.budget.canUseFund(buildCost)) {
       throw new Error('Not enough money');
     }
-    globalContext.gameState.money -= buildCost;
 
-    const office = new Office(type, globalContext.gameState.time);
+    const office = new Office(type, { x, y }, globalContext.gameState.time);
     this.map.set(x, y, office);
+    globalContext.gameState.dataChangedEvent.emit('build-office', { position: { x, y }, type });
+    globalContext.gameState.budget.changeBudget('office-build', {
+      cost: buildCost,
+      type,
+      position: { x, y },
+    });
   }
 
   public processAllOffice(delta: number) {
@@ -28,15 +33,11 @@ export class OfficeMap {
   }
 
   public sellProduct() {
-    let income = 0;
     this.map.iterate((_, __, officeData) => {
       // TODO: 要求量をトレンド等から推定する処理
       const demand = 10;
-      const result = officeData.sell(demand);
-      income += result.income;
-
+      officeData.sell(demand);
       // TODO: 余剰分の処理
     });
-    globalContext.gameState.money += income;
   }
 }

@@ -58,6 +58,11 @@ export class UIController {
     this._confirm.init();
     this._confirm.root.zIndex = 100;
     this._pixiApp.stage.addChild(this._confirm.root);
+
+    // テスト用コード 金かせいだ確認用
+    globalContext.gameState.dataChangedEvent.on('office-accounts', (event) => {
+      this.sendNotification(`オフィス更新: 利益${event.profit}, 損失${event.cost}`);
+    });
   }
 
   public registerScreen(name: string, screen: IScreen) {
