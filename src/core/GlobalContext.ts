@@ -8,6 +8,7 @@ import { MapController } from './scene/MapController';
 import { VVEvent } from '../util/VVEvent';
 import { AssetLoader } from './asset/AssetLoader';
 import { BudgetManager, HandleBudgetEvent } from './logic/BudgetManager';
+import { Calender } from './logic/Calender';
 
 // データの変更とインターフェースの間の通信はこのイベントを通じて行われる
 export type DataChangedEventTable = HandleBudgetEvent & {
@@ -17,6 +18,18 @@ export type DataChangedEventTable = HandleBudgetEvent & {
   };
   'open-office-tree': {
     blueprintId: string;
+  };
+  'next-day': {
+    year: number;
+    month: number;
+    day: number;
+  };
+  'next-month': {
+    year: number;
+    month: number;
+  };
+  'next-year': {
+    year: number;
   };
 };
 
@@ -54,18 +67,17 @@ export type GlobalContext = {
   threeModelLoader: ThreeModelLoader;
   officeTree: OfficeTree;
   officeMap: OfficeMap;
+  calender: Calender;
+  budget: BudgetManager;
   gameParameters: GameParameter;
   windowInfo: {
     width: number;
     height: number;
     title: string;
   };
-  gameState: {
+  gameEvents: {
     interfaceEvent: VVEvent<InterfaceEventTable>;
     dataChangedEvent: VVEvent<DataChangedEventTable>;
-    budget: BudgetManager;
-    time: number;
-    timeParDay: number;
   };
   pipMode: boolean;
 };
@@ -79,18 +91,17 @@ export const globalContext: GlobalContext = {
   threeModelLoader: null as unknown as ThreeModelLoader,
   officeTree: null as unknown as OfficeTree,
   officeMap: null as unknown as OfficeMap,
+  calender: null as unknown as Calender,
+  budget: new BudgetManager(100, 100),
   gameParameters: null as unknown as GameParameter,
   windowInfo: {
     width: 800,
     height: 600,
     title: 'VoxelVenture',
   },
-  gameState: {
+  gameEvents: {
     interfaceEvent: new VVEvent<InterfaceEventTable>(),
     dataChangedEvent: new VVEvent<DataChangedEventTable>(),
-    budget: new BudgetManager(100, 100),
-    time: 0,
-    timeParDay: 1,
   },
   pipMode: false,
 };

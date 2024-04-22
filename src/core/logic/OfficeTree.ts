@@ -37,12 +37,12 @@ export class OfficeTree {
     if (!this.unlockReadyBlueprints.includes(id)) {
       throw new Error(`Dependency not unlocked: ${id}`);
     }
-    if (!globalContext.gameState.budget.canUseFund(blueprint.cost)) {
+    if (!globalContext.budget.canUseFund(blueprint.cost)) {
       throw new Error(`Not enough money: ${id}`);
     }
 
     // アンロック処理
-    globalContext.gameState.budget.changeBudget('office-upgrade', {
+    globalContext.budget.changeBudget('office-upgrade', {
       cost: -blueprint.cost,
       type: blueprint.officeType,
     });

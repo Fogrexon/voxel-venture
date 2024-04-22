@@ -29,27 +29,27 @@ export class MoneyEffectController {
   }
 
   public init() {
-    globalContext.gameState.dataChangedEvent.on('office-build', (event) => {
+    globalContext.gameEvents.dataChangedEvent.on('office-build', (event) => {
       this.showMoneyEffect(-event.cost, event.position);
     });
 
-    globalContext.gameState.dataChangedEvent.on('office-accounts', (event) => {
+    globalContext.gameEvents.dataChangedEvent.on('office-accounts', (event) => {
       this.showMoneyEffect(event.profit - event.cost, event.position);
     });
 
-    globalContext.gameState.dataChangedEvent.on('office-upgrade', (event) => {
+    globalContext.gameEvents.dataChangedEvent.on('office-upgrade', (event) => {
       this.showMoneyEffect(event.cost, {
         x: globalContext.windowInfo.width / 2,
         y: globalContext.windowInfo.height / 2,
       });
     });
-    globalContext.gameState.dataChangedEvent.on('loan-increment', (event) => {
+    globalContext.gameEvents.dataChangedEvent.on('loan-increment', (event) => {
       this.showMoneyEffect(event.amount, {
         x: globalContext.windowInfo.width / 2,
         y: globalContext.windowInfo.height / 2,
       });
     });
-    globalContext.gameState.dataChangedEvent.on('loan-repayment', (event) => {
+    globalContext.gameEvents.dataChangedEvent.on('loan-repayment', (event) => {
       this.showMoneyEffect(-event.amount, {
         x: globalContext.windowInfo.width / 2,
         y: globalContext.windowInfo.height / 2,

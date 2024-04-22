@@ -11,6 +11,7 @@ import { GameParameter } from './logic/GameParameter';
 import { OfficeTree } from './logic/OfficeTree';
 import { OfficeMap } from './logic/OfficeMap';
 import { MapController } from './scene/MapController';
+import { Calender } from './logic/Calender';
 
 export type GameOptions = {
   uiCanvas: HTMLCanvasElement;
@@ -45,6 +46,7 @@ export class Game {
     // setup pixi and three
     globalContext.uiController = new UIController(gameOptions.uiCanvas);
     globalContext.mapController = new MapController(gameOptions.townCanvas, gameOptions.uiCanvas);
+    globalContext.calender = new Calender();
 
     // game管理系コンポーネントの初期化
     globalContext.pixiTextureLoader = gameOptions.pixiTextureLoader;
@@ -74,17 +76,26 @@ export class Game {
     );
     globalContext.mapController.start();
     globalContext.uiController.showScreen(this._gameOptions.initialScreen);
+
+    globalContext.gameEvents.dataChangedEvent.on('next-day', () => {
+      globalContext.officeMap.processAllOffice(1);
+      globalContext.officeMap.sellProduct();
+    });
+
+    globalContext.gameEvents.dataChangedEvent.on('next-month', ({ year, month }) => {
+      globalContext.budget.nextMonth(year, month);
+    });
+
+    globalContext.gameEvents.dataChangedEvent.on('next-year', () => {
+      // do something
+    });
   }
 
   public tick(ticker: Ticker) {
     const deltaTime = ticker.deltaMS / 1000;
-    const { timeParDay } = globalContext.gameState;
-    const isDayChanged = (globalContext.gameState.time % timeParDay) + deltaTime >= timeParDay;
-    globalContext.gameState.time += deltaTime;
-    if (isDayChanged) {
-      globalContext.officeMap.processAllOffice(1);
-      globalContext.officeMap.sellProduct();
-    }
+
+    globalContext.calender.update(deltaTime);
+
     globalContext.mapController.tick(deltaTime);
     globalContext.mapController.render();
   }

@@ -34,7 +34,7 @@ export class MapSelectionScreen implements IScreen {
     if (!officeParams) {
       throw new Error('officeParams is not defined');
     }
-    if (!globalContext.gameState.budget.canUseFund(officeParams.buildCost)) {
+    if (!globalContext.budget.canUseFund(officeParams.buildCost)) {
       await globalContext.uiController.openAlert('お金が足りません');
       return;
     }
@@ -45,13 +45,13 @@ export class MapSelectionScreen implements IScreen {
 
   public async show(): Promise<void> {
     this._root.visible = true;
-    globalContext.gameState.interfaceEvent.on('map-selected', this._handleMapSelectCache);
+    globalContext.gameEvents.interfaceEvent.on('map-selected', this._handleMapSelectCache);
     await gsap.to(this._buttonWrapper.position, { y: 0, duration: 0.3 });
   }
 
   public async hide(): Promise<void> {
-    globalContext.gameState.interfaceEvent.off('map-selected', this._handleMapSelectCache);
-    globalContext.gameState.interfaceEvent.emit('map-selection-end', {});
+    globalContext.gameEvents.interfaceEvent.off('map-selected', this._handleMapSelectCache);
+    globalContext.gameEvents.interfaceEvent.emit('map-selection-end', {});
     await gsap.to(this._buttonWrapper.position, { y: -50, duration: 0.3 });
     this._root.visible = false;
   }
