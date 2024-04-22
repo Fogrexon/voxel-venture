@@ -39,7 +39,7 @@ export class OfficeSelectScreen implements IScreen {
     Object.keys(globalContext.officeTree.officeParamsTable).forEach((officeType, index) => {
       const button = createOfficeButton(officeType, () => {
         globalContext.uiController.showScreen('mapSelection');
-        globalContext.gameState.interfaceEvent.emit('map-selection-start', {
+        globalContext.gameEvents.interfaceEvent.emit('map-selection-start', {
           office: false,
           emptyRot: true,
           context: {

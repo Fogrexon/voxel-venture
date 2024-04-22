@@ -12,14 +12,14 @@ export class OfficeMap {
     }
     const { buildCost } = globalContext.officeTree.getOfficeParams(type);
 
-    if (!globalContext.gameState.budget.canUseFund(buildCost)) {
+    if (!globalContext.budget.canUseFund(buildCost)) {
       throw new Error('Not enough money');
     }
 
-    const office = new Office(type, { x, y }, globalContext.gameState.time);
+    const office = new Office(type, { x, y }, globalContext.calender.getCurrentTimestamp());
     this.map.set(x, y, office);
-    globalContext.gameState.dataChangedEvent.emit('build-office', { position: { x, y }, type });
-    globalContext.gameState.budget.changeBudget('office-build', {
+    globalContext.gameEvents.dataChangedEvent.emit('build-office', { position: { x, y }, type });
+    globalContext.budget.changeBudget('office-build', {
       cost: buildCost,
       type,
       position: { x, y },

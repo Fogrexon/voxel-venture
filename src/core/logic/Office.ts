@@ -1,10 +1,11 @@
 import { Queue } from '../../util/Queue';
 import { globalContext } from '../GlobalContext';
 import { OfficeTypeId, ProductId } from './GameParameter';
+import { Timestamp } from './Calender';
 
 export type Product = {
   readonly productId: ProductId;
-  readonly createdAt: number;
+  readonly createdAt: Timestamp;
 
   price: number;
 };
@@ -12,7 +13,7 @@ export type Product = {
 export class Office {
   public readonly type: OfficeTypeId;
 
-  public readonly builtAt: number;
+  public readonly builtAt: Timestamp;
 
   public readonly position: { x: number; y: number };
 
@@ -20,7 +21,7 @@ export class Office {
 
   private _productionProgress: number;
 
-  constructor(type: string, position: { x: number; y: number }, builtAt: number) {
+  constructor(type: string, position: { x: number; y: number }, builtAt: Timestamp) {
     this.type = type;
     this.builtAt = builtAt;
     this.position = position;
@@ -30,26 +31,26 @@ export class Office {
 
   /**
    * 事業所の生産フェーズ
-   * @param deltaTime
+   * @param deltaDay
    */
-  public produce(deltaTime: number) {
+  public produce(deltaDay: number) {
     const { unitPrice, maxCapacity, productionRate, decayRate } =
       globalContext.officeTree.getOfficeParams(this.type);
 
-    this._productionProgress += deltaTime * productionRate;
+    this._productionProgress += deltaDay * productionRate;
 
     const producedItemNum = Math.floor(this._productionProgress);
     const discardedItemNum = Math.max(this.storage.length + producedItemNum - maxCapacity, 0);
     this._productionProgress -= producedItemNum;
 
     this.storage.iterate((product) => {
-      product.price = Math.max(product.price * (1 - decayRate * deltaTime), 0);
+      product.price = Math.max(product.price * (1 - decayRate * deltaDay), 0);
     });
 
     for (let i = 0; i < producedItemNum - discardedItemNum; i += 1) {
       this.storage.enqueue({
         productId: globalContext.gameParameters.productByType[this.type],
-        createdAt: globalContext.gameState.time,
+        createdAt: globalContext.calender.getCurrentTimestamp(),
         price: unitPrice,
       });
     }
@@ -74,7 +75,7 @@ export class Office {
     }
 
     const { runningCost } = globalContext.officeTree.getOfficeParams(this.type);
-    globalContext.gameState.budget.changeBudget('office-accounts', {
+    globalContext.budget.changeBudget('office-accounts', {
       profit,
       cost: runningCost,
       type: this.type,

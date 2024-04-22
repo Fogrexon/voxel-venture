@@ -102,10 +102,10 @@ export abstract class Modal {
     this.root.alpha = 0;
     gsap.to(this.root, { alpha: 1, duration: 0.3 });
     wiggle(this.modal.position);
-    globalContext.gameState.interfaceEvent.emit('map-selection-pause', {});
+    globalContext.gameEvents.interfaceEvent.emit('map-selection-pause', {});
     const result = await this.userInteraction();
     await gsap.to(this.root, { alpha: 0, duration: 0.3 });
-    globalContext.gameState.interfaceEvent.emit('map-selection-resume', {});
+    globalContext.gameEvents.interfaceEvent.emit('map-selection-resume', {});
     this.root.visible = false;
     return result;
   }

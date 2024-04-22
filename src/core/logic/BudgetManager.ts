@@ -150,7 +150,7 @@ export class BudgetManager {
     const flag = budgetHandler[type](this._budget, this._currentAccountingRecord, info);
 
     if (flag) {
-      globalContext.gameState.dataChangedEvent.emit(type, info as DataChangedEventTable[T]);
+      globalContext.gameEvents.dataChangedEvent.emit(type, info as DataChangedEventTable[T]);
     }
 
     return flag;

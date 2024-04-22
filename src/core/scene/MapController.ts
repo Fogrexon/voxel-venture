@@ -42,7 +42,7 @@ export class MapController {
     this._mapSelector.setActive(false, false);
 
     // setup interface event
-    globalContext.gameState.interfaceEvent.on('map-selection-start', (event) => {
+    globalContext.gameEvents.interfaceEvent.on('map-selection-start', (event) => {
       this._context = event.context;
       this.activateSelector(event.office, event.emptyRot);
     });
@@ -50,24 +50,24 @@ export class MapController {
       if (!this._context) {
         throw new Error('context is not defined');
       }
-      globalContext.gameState.interfaceEvent.emit('map-selected', {
+      globalContext.gameEvents.interfaceEvent.emit('map-selected', {
         x: event.position.x,
         y: event.position.y,
         context: this._context,
       });
     });
-    globalContext.gameState.interfaceEvent.on('map-selection-end', () => {
+    globalContext.gameEvents.interfaceEvent.on('map-selection-end', () => {
       this.deactivateSelector();
     });
-    globalContext.gameState.interfaceEvent.on('map-selection-pause', () => {
+    globalContext.gameEvents.interfaceEvent.on('map-selection-pause', () => {
       this._mapSelector.setPause(true);
     });
-    globalContext.gameState.interfaceEvent.on('map-selection-resume', () => {
+    globalContext.gameEvents.interfaceEvent.on('map-selection-resume', () => {
       this._mapSelector.setPause(false);
     });
 
     // setup data changed event
-    globalContext.gameState.dataChangedEvent.on('office-build', (event) => {
+    globalContext.gameEvents.dataChangedEvent.on('office-build', (event) => {
       this._mapScene.buildOffice(event.position.x, event.position.y, event.type);
     });
   }
